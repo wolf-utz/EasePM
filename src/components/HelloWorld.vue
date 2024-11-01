@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
-defineProps<{ msg: string }>()
+defineProps<{ msg: string }>();
 
-const count = ref(0)
+const count = ref(0);
 interface ElectronApi {
-  savePdf: () => void
+  savePdf: () => void;
 }
 
 // @ts-ignore
-const ipcRenderer : ElectronApi = window.ipcRenderer
+const ipcRenderer: ElectronApi = window.ipcRenderer;
 // const electron = window?.electron
-const onGeneratePdf = function (){
-  ipcRenderer.savePdf()
-}
-
+const onGeneratePdf = function () {
+  ipcRenderer.savePdf();
+};
 </script>
 
 <template>
-
   <button @click="onGeneratePdf">Generate PDF</button>
-
+  <q-badge color="blue"> #4D96F2 </q-badge>
 
   <h1>{{ msg }}</h1>
 
