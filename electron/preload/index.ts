@@ -20,13 +20,6 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   },
-
-  // You can expose other APTs you need here.
-  // ...
-
-  savePdf: () => {
-    ipcRenderer.send("open--save-pdf-dialog");
-  },
 });
 
 // --------- Preload scripts loading ---------
@@ -78,7 +71,7 @@ function useLoading() {
   animation-fill-mode: both;
   width: 50px;
   height: 50px;
-  background: #fff;
+  background: #306844;
   animation: square-spin 3s 0s cubic-bezier(0.09, 0.57, 0.49, 0.9) infinite;
 }
 .app-loading-wrap {
@@ -90,7 +83,7 @@ function useLoading() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #282c34;
+  background: #1d1d1d;
   z-index: 9;
 }
     `;

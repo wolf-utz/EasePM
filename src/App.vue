@@ -45,21 +45,21 @@ function toggleLeftDrawer() {
 
             <q-item-label header>Accounting</q-item-label>
 
-            <q-item to="/invoice" exact>
+            <q-item to="/invoices" exact>
               <q-item-section avatar>
                 <q-icon name="request_page" />
               </q-item-section>
               <q-item-section> Invoice </q-item-section>
             </q-item>
 
-            <q-item to="/offer" exact>
+            <q-item to="/offers" exact>
               <q-item-section avatar>
                 <q-icon name="note_add" />
               </q-item-section>
               <q-item-section> Offers </q-item-section>
             </q-item>
 
-            <q-item to="/analytic" exact>
+            <q-item to="/analytics" exact>
               <q-item-section avatar>
                 <q-icon name="analytics" />
               </q-item-section>
@@ -69,28 +69,28 @@ function toggleLeftDrawer() {
             <q-separator />
             <q-item-label header>Project Management</q-item-label>
 
-            <q-item to="/project" exact>
+            <q-item to="/projects" exact>
               <q-item-section avatar>
                 <q-icon name="lightbulb" />
               </q-item-section>
               <q-item-section> Projects </q-item-section>
             </q-item>
 
-            <q-item to="/customer" exact>
+            <q-item to="/customers" exact>
               <q-item-section avatar>
                 <q-icon name="factory" />
               </q-item-section>
               <q-item-section> Customers </q-item-section>
             </q-item>
 
-            <q-item to="/work-log" exact>
+            <q-item to="/work-logs" exact>
               <q-item-section avatar>
                 <q-icon name="list" />
               </q-item-section>
               <q-item-section> Work logs </q-item-section>
             </q-item>
 
-            <q-item to="/report" exact>
+            <q-item to="/reports" exact>
               <q-item-section avatar>
                 <q-icon name="description" />
               </q-item-section>

@@ -4,9 +4,11 @@ import { Customer } from "../../types/forms/customer-types";
 import { v6 as uuidv6, v6 } from "uuid";
 import generateCustomer from "../../util/customer-number-generator";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const $q = useQuasar();
+const router = useRouter();
 const newCustomer: Customer = {
   _id: "",
   customerNumber: "",
@@ -19,11 +21,11 @@ const newCustomer: Customer = {
   zip: "",
   country: "",
 };
-function onSubmit(newCustomer: Customer) {
+async function onSubmit(newCustomer: Customer) {
   newCustomer._id = uuidv6();
   newCustomer.customerNumber = generateCustomer(newCustomer);
 
-  ipcRenderer.invoke(
+  await ipcRenderer.invoke(
     "storeAdd",
     "customerData",
     "customerData",
@@ -36,6 +38,7 @@ function onSubmit(newCustomer: Customer) {
     position: "top",
     message: "Your data has been saved successfully!",
   });
+  await router.push({ name: "customer" });
 }
 </script>
 

@@ -7,43 +7,33 @@ interface Props {
   label: string;
   hint?: string;
   property: string;
-  value: number;
+  value: boolean;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ (e: "change", value: number): void }>();
+const emit = defineEmits<{ (e: "change", value: boolean): void }>();
 
-const internalValue = ref<number>(props.value);
+const internalValue = ref<boolean>(props.value);
 
 function onChange(): void {
-  emit("change", parseInt(internalValue.value));
+  emit("change", internalValue.value);
 }
 </script>
 
 <template>
   <div :class="{ error: validation[property].$errors.length }">
-    <q-input
+    <q-checkbox
       filled
       v-model="internalValue"
       :label="label"
       :hint="hint"
       lazy-rules
       dark
-      type="number"
       :error="validation[property].$invalid && validation[property].$dirty"
       @keyup="onChange"
       @blur="onChange"
       @change="onChange"
     >
-      <template v-slot:error>
-        <div
-          class="input-errors"
-          v-for="error of validation[property].$errors"
-          :key="error.$uid"
-        >
-          <div class="error-msg text-negative">{{ error.$message }}</div>
-        </div>
-      </template>
-    </q-input>
+    </q-checkbox>
   </div>
 </template>

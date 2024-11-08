@@ -1,5 +1,5 @@
 export interface LineItem {
-  qty: number;
+  quantity: number;
   title: string;
   description: string;
   unit: string;

@@ -11,7 +11,7 @@ const ipcRenderer: ElectronApi = window.ipcRenderer;
 const $q = useQuasar();
 const loaded = ref<boolean>(false);
 const tab = ref<string>("invoices");
-const invoices: Invoice[] = reactive<Invoice[]>([]) as Invoice[];
+const invoices = ref<Invoice[]>([]);
 const formData: InvoiceSettings = reactive<InvoiceSettings>({
   fontSize: 12,
   fontSizeSmall: 10,
@@ -25,6 +25,7 @@ const formData: InvoiceSettings = reactive<InvoiceSettings>({
   outroText:
     "Thank you for your order and I look forward to working with you in the future.",
   signature: "Yours sincerely\n\nWolf-Peter Utz",
+  logo: "/home/wolf/Desktop/logo-no-background.png",
 });
 
 async function loadInvoiceSettings() {
@@ -34,14 +35,14 @@ async function loadInvoiceSettings() {
   );
 }
 async function loadInvoices() {
-  Object.assign(
-    invoices,
-    await ipcRenderer.invoke("storeGet", "invoiceData", "invoiceData")
-  );
-  console.log(invoices);
+  invoices.value = (await ipcRenderer.invoke(
+    "storeGet",
+    "invoiceData",
+    "invoiceData"
+  )) as Invoice[];
 }
 async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
-  ipcRenderer.invoke(
+  await ipcRenderer.invoke(
     "storeSet",
     "invoiceData",
     "invoiceSettings",
@@ -54,6 +55,10 @@ async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
     position: "top",
     message: "Your data has been saved successfully!",
   });
+}
+
+async function onRefreshListing() {
+  await loadInvoices();
 }
 onMounted(async () => {
   await loadInvoiceSettings();
@@ -83,7 +88,10 @@ onMounted(async () => {
     <q-tab-panels v-model="tab" animated class="bg-dark">
       <q-tab-panel name="invoices">
         <div class="text-h6">Invoices</div>
-        <InvoiceListing :invoices="invoices" />
+        <InvoiceListing
+          :invoices="invoices"
+          v-on:refresh-listing="onRefreshListing"
+        />
       </q-tab-panel>
 
       <q-tab-panel name="settings">

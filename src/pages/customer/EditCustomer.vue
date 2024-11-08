@@ -13,8 +13,8 @@ const customer = ref<Customer | null>(null);
 const { id } = defineProps({ id: String });
 const loaded = ref(false);
 
-function onSubmit(updatedCustomer: Customer) {
-  ipcRenderer.invoke(
+async function onSubmit(updatedCustomer: Customer): Promise<void> {
+  await ipcRenderer.invoke(
     "storeUpdate",
     "customerData",
     "customerData",
@@ -28,6 +28,7 @@ function onSubmit(updatedCustomer: Customer) {
     position: "top",
     message: "Your data has been updated successfully!",
   });
+  await router.push({ name: "customer" });
 }
 
 onMounted(async () => {

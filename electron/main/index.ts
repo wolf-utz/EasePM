@@ -3,8 +3,16 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
-import createPdf from "./../generate-pdf.js";
 import Store from "./store.js";
+import FileManager from "./file-manager.js";
+import { createInvoicePdf } from "./pdf-invoice-generator.js";
+import {
+  Customer,
+  Invoice,
+  InvoiceSettings,
+  LineItem,
+  PersonalData,
+} from "./types.js";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -14,6 +22,7 @@ const stores = {
   customerData: new Store({ configName: "customer-data", defaults: {} }),
   invoiceData: new Store({ configName: "invoice-data", defaults: {} }),
 };
+const fileManager: FileManager = new FileManager();
 
 ipcMain.handle("storeSet", (_, storeName, key, value) => {
   const targetStore = stores[storeName] || null;
@@ -69,6 +78,100 @@ ipcMain.handle("storeRemoveSingle", (_, storeName, key, id) => {
   return targetStore.removeSingle(key, id);
 });
 
+ipcMain.handle("fileManagerGetInvoice", (_, fileName, isDraft) => {
+  const userDataPath = app.getPath("userData");
+
+  return fileManager.getFileBase64(
+    path.join(
+      userDataPath,
+      "ease-pm-data",
+      isDraft ? "invoices-draft" : "invoices"
+    ),
+    fileName
+  );
+});
+
+ipcMain.handle(
+  "writeInvoiceDocument",
+  async (_, invoiceId: string): Promise<string> => {
+    const personalData: PersonalData =
+      stores["personalData"].get("personalData");
+    const invoiceSettings: InvoiceSettings =
+      stores["invoiceData"].get("invoiceSettings");
+    const invoice: Invoice = stores["invoiceData"].getSingle(
+      "invoiceData",
+      invoiceId
+    );
+    const customer: Customer = stores["customerData"].getSingle(
+      "customerData",
+      invoice._customerId
+    );
+    const exportDirectory = path.join(
+      app.getPath("userData"),
+      "ease-pm-data",
+      invoice.draft ? "invoices-draft" : "invoices"
+    );
+
+    await createInvoicePdf(
+      {
+        font: {
+          size: invoiceSettings.fontSize,
+          default: invoiceSettings.defaultFont,
+          bold: invoiceSettings.boldFont,
+          sizeSmall: invoiceSettings.fontSizeSmall,
+        },
+        seller: {
+          name: personalData.firstName + " " + personalData.lastName,
+          address: personalData.address,
+          zip: personalData.zip,
+          city: personalData.city,
+          country: personalData.country,
+          taxNumber: personalData.taxNumber,
+          email: personalData.email,
+          banking: {
+            bank: personalData.banking.bank,
+            iban: personalData.banking.iban,
+            bic: personalData.banking.bic,
+          },
+        },
+        buyer: {
+          company: customer.company,
+          name: customer.firstName + " " + customer.lastName,
+          address: customer.address,
+          zip: customer.zip,
+          city: customer.city,
+          customerNumber: customer.customerNumber,
+        },
+        invoiceNumber: invoice.invoiceNumber,
+        invoiceDate: "01.01.1970", // @todo convert unix ts to german date.
+        deliveryDate: "01.01.1970", // @todo convert unix ts to german date.
+        title: invoiceSettings.title,
+        introText: invoiceSettings.introText,
+        outroText: invoiceSettings.outroText,
+        taxHint: invoiceSettings.taxHint,
+        paymentNote: invoiceSettings.paymentNote,
+        signature: invoiceSettings.signature,
+        total: invoice.total,
+        lineItems: invoice.lineItems.map((lineItem: LineItem) => {
+          return {
+            qty: lineItem.quantity,
+            description: lineItem.description,
+            unit: lineItem.unit,
+            unitPrice: lineItem.unitPrice,
+            unitTotal: lineItem.unitTotal,
+            title: lineItem.title,
+          };
+        }),
+        logo: invoiceSettings.logo || "",
+      },
+      exportDirectory,
+      invoice.draft
+    );
+
+    return path.join(exportDirectory, `${invoice.invoiceNumber}.pdf`);
+  }
+);
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -117,6 +220,8 @@ async function createWindow() {
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
       // contextIsolation: false,
     },
+    width: 1024,
+    height: 940,
   });
 
   if (VITE_DEV_SERVER_URL) {
@@ -139,6 +244,7 @@ async function createWindow() {
     return { action: "deny" };
   });
   // win.webContents.on('will-navigate', (event, url) => { }) #344
+  // win.removeMenu();
 }
 
 app.whenReady().then(createWindow);
@@ -180,24 +286,4 @@ ipcMain.handle("open-win", (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg });
   }
-});
-
-ipcMain.on("open--save-pdf-dialog", (event) => {
-  console.log("Received message open--save-pdf-dialog");
-  dialog
-    .showSaveDialog(win, {
-      title: "Save file",
-      defaultPath: "my_filename",
-      buttonLabel: "Save",
-
-      filters: [
-        { name: "txt", extensions: ["pdf"] },
-        { name: "All Files", extensions: ["*"] },
-      ],
-    })
-    .then(({ filePath }) => {
-      if (filePath) {
-        createPdf(filePath);
-      }
-    });
 });

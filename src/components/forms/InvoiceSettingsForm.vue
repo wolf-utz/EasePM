@@ -7,6 +7,7 @@ import NumberField from "./elements/NumberField.vue";
 import TextareaField from "./elements/TextareaField.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
 import { useQuasar } from "quasar";
+import { onMounted, ref } from "vue";
 
 const props = defineProps<{
   formData: InvoiceSettings;
@@ -28,6 +29,7 @@ const rules = {
   signature: { required },
 };
 const v$ = useVuelidate(rules, props.formData);
+const logo = ref<File | null>(null);
 
 function onSubmit(): void {
   v$.value.$touch();
@@ -44,6 +46,15 @@ function onSubmit(): void {
     message: "The submited date is not valid. Please check the form.",
   });
 }
+
+onMounted(async () => {
+  if (props.formData.logo) {
+    const fileName = props.formData.logo.split("/").pop();
+    const response = await fetch(props.formData.logo);
+    const blob = await response.blob();
+    logo.value = new File([blob], fileName || "unknown");
+  }
+});
 </script>
 
 <template>
@@ -141,6 +152,18 @@ function onSubmit(): void {
       :value="formData.signature"
       @change="(value: string) => (formData.signature = value)"
     />
+
+    <q-file
+      dark
+      v-model="logo"
+      label="Invoice logo"
+      hint="Set the path of your logo file. This file wont be moved into the application."
+      @update:modelValue="() => (formData.logo = logo?.path)"
+    >
+      <template v-slot:prepend>
+        <q-icon name="attach_file" />
+      </template>
+    </q-file>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn

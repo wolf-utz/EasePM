@@ -97,9 +97,8 @@ async function onRemoveCustomer() {
   if (!customerToRemove) {
     return;
   }
-  console.log("remove", customerToRemove.value);
 
-  ipcRenderer.invoke(
+  await ipcRenderer.invoke(
     "storeRemoveSingle",
     "customerData",
     "customerData",
@@ -124,12 +123,11 @@ async function onRemoveCustomer() {
 }
 
 onMounted(async () => {
-  const persistedCustomers = (await ipcRenderer.invoke(
+  customers.value = (await ipcRenderer.invoke(
     "storeGet",
     "customerData",
     "customerData"
   )) as Customer[];
-  customers.value = persistedCustomers;
   loaded.value = true;
 });
 </script>
@@ -151,21 +149,24 @@ onMounted(async () => {
           fab
           dense
           round
-          color="accent"
-          icon="edit"
-          title="Edit Customer"
+          color="dark"
+          class="q-mr-sm"
+          title="Edit customer"
           @click="onEditCustomer(props.row)"
-        />
+        >
+          <q-icon size="xs" color="grey" name="edit" />
+        </q-btn>
         <q-btn
           fab
           dense
           round
-          color="negative"
-          icon="delete_forever"
-          title="Remove Customer"
-          class="q-ml-sm"
+          color="dark"
+          class="q-mr-sm"
+          title="Remove customer"
           @click="openRemoveCustomerConfirmDialoge(props.row)"
-        />
+        >
+          <q-icon size="xs" color="grey" name="delete_forever" />
+        </q-btn>
       </q-td>
     </template>
   </q-table>
