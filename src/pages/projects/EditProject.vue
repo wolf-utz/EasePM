@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { Customer } from "../../types/forms/customer-types";
-import AppCustomerForm from "../../components/forms/CustomerForm.vue";
+import { Project } from "../../types/project-types";
+import ProjectForm from "../../components/forms/ProjectForm.vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 
@@ -9,17 +9,17 @@ import { useRouter } from "vue-router";
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const router = useRouter();
 const $q = useQuasar();
-const customer = ref<Customer | null>(null);
+const project = ref<Project | null>(null);
 const { id } = defineProps({ id: String });
 const loaded = ref(false);
 
-async function onSubmit(updatedCustomer: Customer): Promise<void> {
+async function onSubmit(updatedProject: Project): Promise<void> {
   await ipcRenderer.invoke(
     "storeUpdate",
-    "customerData",
-    "customerData",
+    "projectData",
+    "projectData",
     id,
-    JSON.parse(JSON.stringify(updatedCustomer))
+    JSON.parse(JSON.stringify(updatedProject))
   );
   $q.notify({
     progress: true,
@@ -28,31 +28,26 @@ async function onSubmit(updatedCustomer: Customer): Promise<void> {
     position: "top",
     message: "Your data has been updated successfully!",
   });
-  await router.push({ name: "customers" });
+  await router.push({ name: "projects" });
 }
 
 onMounted(async () => {
-  const persistedCustomer = (await ipcRenderer.invoke(
+  project.value = (await ipcRenderer.invoke(
     "storeGetSingle",
-    "customerData",
-    "customerData",
+    "projectData",
+    "projectData",
     id
-  )) as Customer;
-  customer.value = persistedCustomer;
+  )) as Project;
   loaded.value = true;
 });
 </script>
 
 <template>
-  <h1 class="text-h5">Edit Customer</h1>
+  <h1 class="text-h5">Edit Project</h1>
   <div v-if="loaded">
-    <AppCustomerForm
-      v-if="customer"
-      :form-data="customer"
-      v-on:submit="onSubmit"
-    />
+    <ProjectForm v-if="project" :form-data="project" v-on:submit="onSubmit" />
     <q-banner v-else inline-actions class="text-white bg-red">
-      Customer not found.
+      Project not found.
     </q-banner>
   </div>
   <div v-else>
@@ -67,7 +62,7 @@ onMounted(async () => {
       icon="arrow_back"
       color="dark"
       title="Back to listing"
-      @click="() => router.push({ name: 'customer' })"
+      @click="() => router.push({ name: 'projects' })"
     />
   </q-page-sticky>
 </template>

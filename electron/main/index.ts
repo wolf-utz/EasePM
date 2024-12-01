@@ -13,6 +13,7 @@ import {
   LineItem,
   PersonalData,
 } from "./types.js";
+import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util.js";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -21,6 +22,7 @@ const stores = {
   personalData: new Store({ configName: "personal-data", defaults: {} }),
   customerData: new Store({ configName: "customer-data", defaults: {} }),
   invoiceData: new Store({ configName: "invoice-data", defaults: {} }),
+  projectData: new Store({ configName: "project-data", defaults: {} }),
 };
 const fileManager: FileManager = new FileManager();
 
@@ -143,8 +145,8 @@ ipcMain.handle(
           customerNumber: customer.customerNumber,
         },
         invoiceNumber: invoice.invoiceNumber,
-        invoiceDate: "01.01.1970", // @todo convert unix ts to german date.
-        deliveryDate: "01.01.1970", // @todo convert unix ts to german date.
+        invoiceDate: formatUnixTimestampToGermanDate(invoice.invoiceDate),
+        deliveryDate: formatUnixTimestampToGermanDate(invoice.deliveryDate),
         title: invoiceSettings.title,
         introText: invoiceSettings.introText,
         outroText: invoiceSettings.outroText,

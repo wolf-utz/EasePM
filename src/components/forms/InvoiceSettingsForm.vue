@@ -43,7 +43,7 @@ function onSubmit(): void {
     type: "negative",
     timeout: 1500,
     position: "top",
-    message: "The submited date is not valid. Please check the form.",
+    message: "The submited data is not valid. Please check the form.",
   });
 }
 

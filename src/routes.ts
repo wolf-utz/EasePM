@@ -13,6 +13,10 @@ import EditCustomer from "./pages/customer/EditCustomer.vue";
 import NewInvoice from "./pages/invoice/NewInvoice.vue";
 import EditInvoice from "./pages/invoice/EditInvoice.vue";
 import Settings from "./pages/system/Settings.vue";
+import ListProjects from "./pages/projects/ListProjects.vue";
+import EditProject from "./pages/projects/EditProject.vue";
+import NewProject from "./pages/projects/NewProject.vue";
+import KanbanBoard from "./pages/projects/KanbanBoard.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -92,9 +96,35 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/projects",
     name: "projects",
-    component: Dashboard,
+    component: ListProjects,
     meta: {
       title: "Your projects",
+    },
+  },
+  {
+    path: "/projects/new",
+    name: "projects/new",
+    component: NewProject,
+    meta: {
+      title: "Create a new Project",
+    },
+  },
+  {
+    path: "/projects/edit/:id",
+    name: "projects/edit",
+    component: EditProject,
+    props: true,
+    meta: {
+      title: "Edit Project",
+    },
+  },
+  {
+    path: "/projects/kanban/:id",
+    name: "projects/kanban",
+    component: KanbanBoard,
+    props: true,
+    meta: {
+      title: "Project kanban board",
     },
   },
   {

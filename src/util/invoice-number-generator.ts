@@ -4,9 +4,6 @@ import { Invoice } from "../types/invoice-types";
 export default async function generateInvoiceNumber({
   _customerId,
 }: Invoice): Promise<string> {
-  // @ts-ignore
-  const ipcRenderer: ElectronApi = window.ipcRenderer;
-
   const customer = await fetchCustomer(_customerId);
   const invoices = await fetchInvoices();
 

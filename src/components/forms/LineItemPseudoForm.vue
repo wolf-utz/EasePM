@@ -10,6 +10,7 @@ import NumberField from "./elements/NumberField.vue";
 import { formatCurrency } from "../../util/format-currency";
 import { computed } from "vue";
 import LineItemUnitSelectField from "./elements/LineItemUnitSelectField.vue";
+import FloatField from "./elements/FloatField.vue";
 
 const props = defineProps<{
   formData: LineItem;
@@ -55,7 +56,7 @@ const v$ = useVuelidate(rules, props.formData);
 
     <TwoColumn>
       <template v-slot:leftColumn>
-        <NumberField
+        <FloatField
           class="q-mb-sm"
           label="Quantity*"
           hint="The quantity of the position."

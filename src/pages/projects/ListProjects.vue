@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Customer } from "../../types/forms/customer-types";
+import { Project } from "../../types/project-types";
 import { useQuasar } from "quasar";
+import { convertUnixToGermanDate } from "../../util/timestamp";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const router = useRouter();
 const $q = useQuasar();
 const loaded = ref<boolean>(false);
-const customers = ref<Customer[]>([]);
-const customerToRemove = ref<Customer | null>(null);
+const projects = ref<Project[]>([]);
+const projectToRemove = ref<Project | null>(null);
 const confirm = ref(<boolean>false);
 const columns: Array<{
   name: string;
@@ -30,81 +31,71 @@ const columns: Array<{
     sortable: false,
   },
   {
-    name: "customerNumber",
+    name: "projectNumber",
     required: true,
-    label: "Customer number",
+    label: "Project number",
     align: "left",
-    field: "customerNumber",
+    field: "projectNumber",
     sortable: false,
   },
   {
-    name: "company",
+    name: "title",
     required: true,
-    label: "Company",
+    label: "Title",
     align: "left",
-    field: "company",
+    field: "title",
     sortable: true,
   },
   {
-    name: "firstName",
+    name: "state",
     required: true,
-    label: "First name",
+    label: "State",
     align: "left",
-    field: "firstName",
+    field: "state",
     sortable: true,
   },
   {
-    name: "lastName",
+    name: "creationDateTime",
     required: true,
-    label: "Last name",
+    label: "Created At",
     align: "left",
-    field: "lastName",
-    sortable: true,
-  },
-  {
-    name: "city",
-    required: true,
-    label: "City",
-    align: "left",
-    field: "city",
-    sortable: true,
-  },
-  {
-    name: "zip",
-    required: true,
-    label: "ZIP",
-    align: "left",
-    field: "zip",
+    field: "creationDateTime",
     sortable: true,
   },
 ];
 
-async function onAddnewCustomer() {
-  await router.push({ name: "customer/new" });
+async function onAddNewProject() {
+  await router.push({ name: "projects/new" });
 }
 
-function onEditCustomer(customer: Customer) {
+function onEditProject(project: Project) {
   router.push({
-    name: "customer/edit",
-    params: { id: customer._id },
+    name: "projects/edit",
+    params: { id: project._id },
   });
 }
-function openRemoveCustomerConfirmDialoge(customer: Customer) {
-  customerToRemove.value = customer;
+function onOpenRemoveProjectConfirmDialoge(project: Project) {
+  projectToRemove.value = project;
   confirm.value = true;
 }
-async function onRemoveCustomer() {
-  if (!customerToRemove) {
+function onOpenKanban(project: Project) {
+  router.push({
+    name: "projects/kanban",
+    params: { id: project._id },
+  });
+}
+async function onRemoveProject() {
+  if (!projectToRemove) {
     return;
   }
 
   await ipcRenderer.invoke(
     "storeRemoveSingle",
-    "customerData",
-    "customerData",
-    customerToRemove.value?._id
+    "projectData",
+    "projectData",
+    projectToRemove.value?._id
   );
-  customerToRemove.value = null;
+  projectToRemove.value = null;
 
   $q.notify({
     progress: true,
@@ -114,34 +105,34 @@ async function onRemoveCustomer() {
     message: "The data has been removed successfully!",
   });
 
-  const persistedCustomers = (await ipcRenderer.invoke(
+  const persistedprojects = (await ipcRenderer.invoke(
     "storeGet",
-    "customerData",
-    "customerData"
-  )) as Customer[];
-  customers.value = persistedCustomers;
+    "projectData",
+    "projectData"
+  )) as Project[];
+  projects.value = persistedprojects;
 }
 
 onMounted(async () => {
-  customers.value = (await ipcRenderer.invoke(
+  projects.value = (await ipcRenderer.invoke(
     "storeGet",
-    "customerData",
-    "customerData"
-  )) as Customer[];
+    "projectData",
+    "projectData"
+  )) as Project[];
   loaded.value = true;
 });
 </script>
 
 <template>
-  <h1 class="text-h5">Your Customers</h1>
+  <h1 class="text-h5">Your Projects</h1>
   <q-table
     dark
     flat
     bordered
     :loading="!loaded"
-    :rows="customers"
+    :rows="projects"
     :columns="columns"
-    row-key="customerNumber"
+    row-key="projectNumber"
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
@@ -151,8 +142,8 @@ onMounted(async () => {
           round
           color="dark"
           class="q-mr-sm"
-          title="Edit customer"
-          @click="onEditCustomer(props.row)"
+          title="Edit project"
+          @click="onEditProject(props.row)"
         >
           <q-icon size="xs" color="grey" name="edit" />
         </q-btn>
@@ -162,11 +153,28 @@ onMounted(async () => {
           round
           color="dark"
           class="q-mr-sm"
-          title="Remove customer"
-          @click="openRemoveCustomerConfirmDialoge(props.row)"
+          title="Remove project"
+          @click="onOpenRemoveProjectConfirmDialoge(props.row)"
         >
           <q-icon size="xs" color="grey" name="delete_forever" />
         </q-btn>
+        <q-btn
+          fab
+          dense
+          round
+          color="dark"
+          class="q-mr-sm"
+          title="Open kanban board"
+          @click="onOpenKanban(props.row)"
+        >
+          <q-icon size="xs" color="grey" name="view_kanban" />
+        </q-btn>
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-creationDateTime="props">
+      <q-td :props="props">
+        {{ convertUnixToGermanDate(props.row.creationDateTime) }}
       </q-td>
     </template>
   </q-table>
@@ -177,8 +185,8 @@ onMounted(async () => {
       color="primary"
       :disable="!loaded"
       icon="add"
-      title="Add new Customer"
-      @click="onAddnewCustomer"
+      title="Add new Project"
+      @click="onAddNewProject"
     />
   </q-page-sticky>
 
@@ -187,8 +195,8 @@ onMounted(async () => {
       <q-card-section class="row items-center">
         <q-avatar icon="delete" color="negative" text-color="white" />
         <span class="q-pt-none q-ml-sm">
-          Do you really want to remove the customer
-          <b>{{ customerToRemove?.customerNumber }}</b>
+          Do you really want to remove the project
+          <b>{{ projectToRemove?.title }}</b>
         </span>
       </q-card-section>
 
@@ -196,10 +204,10 @@ onMounted(async () => {
         <q-btn flat label="Cancel" color="primary" v-close-popup />
         <q-btn
           flat
-          label="Remove customer"
+          label="Remove project"
           color="negative"
           v-close-popup
-          @click="onRemoveCustomer"
+          @click="onRemoveProject"
         />
       </q-card-actions>
     </q-card>

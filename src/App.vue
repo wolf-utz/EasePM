@@ -52,14 +52,14 @@ function toggleLeftDrawer() {
               <q-item-section> Invoice </q-item-section>
             </q-item>
 
-            <q-item to="/offers" exact>
+            <q-item to="/offers" exact :disable="true">
               <q-item-section avatar>
                 <q-icon name="note_add" />
               </q-item-section>
               <q-item-section> Offers </q-item-section>
             </q-item>
 
-            <q-item to="/analytics" exact>
+            <q-item to="/analytics" exact :disable="true">
               <q-item-section avatar>
                 <q-icon name="analytics" />
               </q-item-section>
@@ -83,14 +83,7 @@ function toggleLeftDrawer() {
               <q-item-section> Customers </q-item-section>
             </q-item>
 
-            <q-item to="/work-logs" exact>
-              <q-item-section avatar>
-                <q-icon name="list" />
-              </q-item-section>
-              <q-item-section> Work logs </q-item-section>
-            </q-item>
-
-            <q-item to="/reports" exact>
+            <q-item to="/reports" exact :disable="true">
               <q-item-section avatar>
                 <q-icon name="description" />
               </q-item-section>
@@ -107,7 +100,7 @@ function toggleLeftDrawer() {
               <q-item-section> Account </q-item-section>
             </q-item>
 
-            <q-item to="/settings" exact>
+            <q-item to="/settings" exact :disable="true">
               <q-item-section avatar>
                 <q-icon name="settings" />
               </q-item-section>

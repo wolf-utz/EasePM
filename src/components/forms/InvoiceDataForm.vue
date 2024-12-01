@@ -13,7 +13,6 @@ import LineItemsField from "./elements/LineItemsField.vue";
 import { Invoice, LineItem } from "../../types/invoice-types";
 import { ref } from "vue";
 import { formatCurrency } from "../../util/format-currency";
-import CheckboxField from "./elements/CheckboxField.vue";
 
 const props = defineProps<{
   formData: Invoice;

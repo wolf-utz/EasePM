@@ -88,31 +88,6 @@ function createInvoicePdf(
     }
   });
 }
-// function createInvoicePdf(
-//   invoice: PdfInvoice,
-//   exportPath: string,
-//   isDraft: boolean
-// ): void {
-//   const doc = new PDFDocument({ margin: 50 });
-//   doc.fontSize(invoice.font.size);
-//   doc.font(invoice.font.default);
-
-//   generateHeader(doc, invoice);
-//   generateSellerInformation(doc, invoice);
-//   generateBuyerInformation(doc, invoice);
-//   generateIntro(doc, invoice);
-//   generateFooter(doc, invoice);
-//   generateTableHeader(doc, invoice);
-//   generateLineItems(doc, invoice);
-//   generateOutro(doc, invoice);
-
-//   if (isDraft) {
-//     addDraftWatermark(doc);
-//   }
-
-//   doc.end();
-//   doc.pipe(fs.createWriteStream(`${exportPath}/${invoice.invoiceNumber}.pdf`));
-// }
 
 function addDraftWatermark(doc: PDFKit.PDFDocument): void {
   const pageWidth = doc.page.width;
