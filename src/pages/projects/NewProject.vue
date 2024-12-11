@@ -20,6 +20,7 @@ const newProject: Project = {
   state: ProjectState.OPEN,
   creationDateTime: 0,
   tasks: [],
+  taskAutoIncrement: 1,
 };
 async function onSubmit(newProject: Project) {
   newProject._id = uuidv6();
