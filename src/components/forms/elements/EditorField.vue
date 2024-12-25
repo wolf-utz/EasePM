@@ -22,13 +22,12 @@ function onChange(): void {
 
 <template>
   <div :class="{ error: validation[property].$errors.length }">
+    <p class="q-field__bottom q-dark">{{ label }}</p>
     <q-editor
       min-height="5rem"
       filled
       autogrow
       v-model="internalValue"
-      :label="label"
-      :hint="hint"
       lazy-rules
       dark
       :error="validation[property].$invalid && validation[property].$dirty"

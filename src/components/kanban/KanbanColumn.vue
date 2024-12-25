@@ -3,7 +3,6 @@ import { ref, watch } from "vue";
 import { Task, TaskState } from "../../types/project-types";
 import draggable from "vuedraggable";
 import KanbanTask from "./KanbanTask.vue";
-import moment from "moment";
 
 interface Props {
   group: string;

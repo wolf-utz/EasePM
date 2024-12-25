@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { Project, Task, TaskState } from "../../types/project-types";
 import KanbanColumn from "../../components/kanban/KanbanColumn.vue";
 import TaskForm from "../../components/forms/TaskForm.vue";
 import generateTaskNumber from "../../util/tasknumber-generator";
 import moment from "moment";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
+import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
+import { calculateBillableTime } from "../../util/project-util";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
+const router = useRouter();
 const project = ref<Project | null>(null);
 const { id } = defineProps({ id: String });
 const loaded = ref(false);
@@ -30,6 +34,13 @@ const emptyTask: Task = {
   workLogs: [],
 };
 const newTask = ref<Task>(JSON.parse(JSON.stringify(emptyTask)));
+const billableTime = computed(() => {
+  if (project.value !== null) {
+    return calculateBillableTime(project.value);
+  }
+  return 0;
+});
+
 function onAddnewTask(): void {
   newTask.value = JSON.parse(JSON.stringify(emptyTask));
 
@@ -131,7 +142,7 @@ onMounted(async () => {
     <h1 class="text-h5">
       Kanban Project: <strong>{{ project?.title }}</strong>
     </h1>
-    <div class="kanban">
+    <div class="kanban q-mb-md">
       <div class="row">
         <div class="col-3 q-px-sm q-col">
           <KanbanColumn
@@ -179,6 +190,12 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <div>
+      <q-icon name="timer" size="xs" class="q-mr-xs" />
+      {{ convertUnixTimestampToTimeInput(billableTime) }} (billable time)
+    </div>
+
     <q-dialog
       v-model="newTaskDialogOpen"
       persistent
@@ -199,7 +216,15 @@ onMounted(async () => {
       </q-card>
     </q-dialog>
   </div>
-
+  <q-page-sticky position="top-right" :offset="[18, 18]">
+    <q-btn
+      fab
+      icon="arrow_back"
+      color="dark"
+      title="Back to listing"
+      @click="() => router.push({ name: 'projects' })"
+    />
+  </q-page-sticky>
   <q-page-sticky position="bottom-right" :offset="[18, 18]">
     <q-btn
       fab

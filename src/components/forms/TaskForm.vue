@@ -9,6 +9,8 @@ import EditorField from "./elements/EditorField.vue";
 import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
 import WorkLogDialog from "../dialogs/WorkLogDialog.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
+import moment from "moment";
+import { unixTimestampToDateString } from "../../util/timestamp";
 
 const props = defineProps<{
   formData: Task;
@@ -66,10 +68,19 @@ function onNewWorkLog(): void {
 }
 
 function onCreateWorklog() {
-  formData.workLogs.push(JSON.parse(JSON.stringify(newWorkLog.value)));
+  const workLog = JSON.parse(JSON.stringify(newWorkLog.value));
+  workLog.creationDateTime = moment().unix();
+  workLog.displayDateTime = workLog.creationDateTime; // @todo Fix me
+
+  formData.workLogs.push(workLog);
   newWorkLog.value = null;
   showNewWorkLogDialog.value = false;
   emit("silentSubmit", JSON.parse(JSON.stringify(props.formData)));
+}
+
+function onCloseCreateWorklog() {
+  showNewWorkLogDialog.value = false;
+  newWorkLog.value = null;
 }
 
 function onEditWorkLog(workLog: WorkLog): void {
@@ -81,6 +92,11 @@ function onUpdateWorkLog(workLog: WorkLog): void {
   showEditWorkLogDialog.value = false;
   workLogToEdit.value = null;
   emit("silentSubmit", JSON.parse(JSON.stringify(props.formData)));
+}
+
+function onCloseUpdateWorklog() {
+  showEditWorkLogDialog.value = false;
+  workLogToEdit.value = null;
 }
 
 function onDeleteWorkLog(workLog: WorkLog): void {
@@ -162,12 +178,20 @@ function onDeleteWorkLog(workLog: WorkLog): void {
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>{{
-                convertUnixTimestampToTimeInput(workLog.trackedTime)
-              }}</q-item-label>
-              <q-item-label caption lines="2" class="text-white">{{
-                workLog.message
-              }}</q-item-label>
+              <q-item-label>
+                {{ convertUnixTimestampToTimeInput(workLog.trackedTime) }}
+              </q-item-label>
+              <q-item-label caption lines="2" class="text-white">
+                {{ workLog.message }}
+              </q-item-label>
+              <q-item-label caption class="text-white">
+                {{
+                  unixTimestampToDateString(
+                    workLog.creationDateTime,
+                    "D.M.YYYY"
+                  )
+                }}
+              </q-item-label>
             </q-item-section>
 
             <q-item-section side top>
@@ -220,6 +244,7 @@ function onDeleteWorkLog(workLog: WorkLog): void {
       :confirm="showEditWorkLogDialog"
       :work-log="workLogToEdit"
       v-on:submit="onUpdateWorkLog"
+      v-on:close="onCloseUpdateWorklog"
     />
     <WorkLogDialog
       v-if="newWorkLog"
@@ -227,6 +252,7 @@ function onDeleteWorkLog(workLog: WorkLog): void {
       :confirm="showNewWorkLogDialog"
       :work-log="newWorkLog"
       v-on:submit="onCreateWorklog"
+      v-on:close="onCloseCreateWorklog"
     />
   </q-card>
 </template>

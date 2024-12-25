@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Task } from "../../types/project-types";
 import TaskForm from "../forms/TaskForm.vue";
 import moment from "moment";
+import { calculateBillableTimeOfTask } from "../../util/task-util";
+import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
+
 interface Props {
   task: Task;
 }
@@ -11,6 +14,8 @@ const emit = defineEmits<{
   (e: "updateTask"): void;
 }>();
 const dialogOpen = ref<boolean>(false);
+
+const billableTime = computed(() => calculateBillableTimeOfTask(props.task));
 
 function onSilentSubmitTask() {
   props.task.updatedDateTime = moment().unix();
@@ -27,6 +32,10 @@ function onSubmitTask() {
     <q-item>
       <q-item-section>
         <q-item-label> {{ task.title }}</q-item-label>
+        <q-item-label caption class="text-white">
+          <q-icon name="timer" size="xs" class="q-mr-xs" />
+          {{ convertUnixTimestampToTimeInput(billableTime) }} (billable time)
+        </q-item-label>
       </q-item-section>
 
       <q-item-section avatar>
@@ -41,10 +50,24 @@ function onSubmitTask() {
     </q-item>
     <q-dialog v-model="dialogOpen" persistent backdrop-filter="blur(4px)">
       <q-card flat dark style="width: 100%; max-width: 600px">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 q-mr-sm">{{ task.title }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+        <q-card-section
+          style="
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+          "
+        >
+          <div class="text-h6">
+            {{ task.title }}
+          </div>
+          <q-btn
+            icon="close"
+            flat
+            round
+            dense
+            v-close-popup
+            class="col-shrink"
+          />
         </q-card-section>
 
         <q-separator dark />

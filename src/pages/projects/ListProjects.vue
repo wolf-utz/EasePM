@@ -4,6 +4,8 @@ import { useRouter } from "vue-router";
 import { Project } from "../../types/project-types";
 import { useQuasar } from "quasar";
 import { convertUnixToGermanDate } from "../../util/timestamp";
+import { calculateBillableTime } from "../../util/project-util";
+import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
@@ -36,6 +38,14 @@ const columns: Array<{
     label: "Project number",
     align: "left",
     field: "projectNumber",
+    sortable: false,
+  },
+  {
+    name: "billableTrackedWork",
+    required: true,
+    label: "Billable tracked work",
+    align: "left",
+    field: "billableTrackedWork",
     sortable: false,
   },
   {
@@ -169,6 +179,12 @@ onMounted(async () => {
         >
           <q-icon size="xs" color="grey" name="view_kanban" />
         </q-btn>
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-billableTrackedWork="props">
+      <q-td :props="props">
+        {{ convertUnixTimestampToTimeInput(calculateBillableTime(props.row)) }}
       </q-td>
     </template>
 

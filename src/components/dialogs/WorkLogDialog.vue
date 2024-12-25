@@ -14,6 +14,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "submit", workLog: WorkLog): void;
+  (e: "close"): void;
 }>();
 
 // @ts-ignore
@@ -22,6 +23,9 @@ const $q = useQuasar();
 const confirm = ref<boolean>(props.confirm);
 async function onSubmit(workLog: WorkLog): Promise<void> {
   emit("submit", JSON.parse(JSON.stringify(workLog)));
+}
+function onClose(): void {
+  emit("close");
 }
 </script>
 
@@ -34,8 +38,22 @@ async function onSubmit(workLog: WorkLog): Promise<void> {
     backdrop-filter="blur(4px)"
   >
     <q-card flat dark style="width: 100%; max-width: 600px">
-      <q-card-section>
+      <q-card-section
+        style="
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
         <div class="text-h6">{{ title }}</div>
+        <q-btn
+          icon="close"
+          flat
+          round
+          dense
+          class="col-shrink"
+          v-on:click="onClose"
+        />
       </q-card-section>
 
       <q-card-section>
