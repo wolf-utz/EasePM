@@ -142,53 +142,43 @@ onMounted(async () => {
     <h1 class="text-h5">
       Kanban Project: <strong>{{ project?.title }}</strong>
     </h1>
-    <div class="kanban q-mb-md">
-      <div class="row">
-        <div class="col-3 q-px-sm q-col">
-          <KanbanColumn
-            group="tasks"
-            :state="TaskState.OPEN"
-            :tasks="tasksOpen"
-            :animation-time="animationTime"
-            @task-moved="onTaskMoved"
-            @task-updated="onTaskUpdated"
-            v-on:update:tasks="(tasks: Task[]) => (tasksOpen = tasks)"
-          />
-        </div>
-        <div class="col-3 q-px-sm q-col">
-          <KanbanColumn
-            group="tasks"
-            :state="TaskState.PAUSED"
-            :tasks="tasksPaused"
-            :animation-time="animationTime"
-            @task-moved="onTaskMoved"
-            @task-updated="onTaskUpdated"
-            v-on:update:tasks="(tasks: Task[]) => (tasksPaused = tasks)"
-          />
-        </div>
-        <div class="col-3 q-px-sm q-col">
-          <KanbanColumn
-            group="tasks"
-            :state="TaskState.IN_PROGRESS"
-            :tasks="tasksInProgess"
-            :animation-time="animationTime"
-            @task-moved="onTaskMoved"
-            @task-updated="onTaskUpdated"
-            v-on:update:tasks="(tasks: Task[]) => (tasksInProgess = tasks)"
-          />
-        </div>
-        <div class="col-3 q-px-sm q-col">
-          <KanbanColumn
-            group="tasks"
-            :state="TaskState.DONE"
-            :tasks="tasksDone"
-            :animation-time="animationTime"
-            @task-moved="onTaskMoved"
-            @task-updated="onTaskUpdated"
-            v-on:update:tasks="(tasks: Task[]) => (tasksDone = tasks)"
-          />
-        </div>
-      </div>
+    <div class="kanban-board q-mb-md">
+      <KanbanColumn
+        group="tasks"
+        :state="TaskState.OPEN"
+        :tasks="tasksOpen"
+        :animation-time="animationTime"
+        @task-moved="onTaskMoved"
+        @task-updated="onTaskUpdated"
+        v-on:update:tasks="(tasks: Task[]) => (tasksOpen = tasks)"
+      />
+      <KanbanColumn
+        group="tasks"
+        :state="TaskState.PAUSED"
+        :tasks="tasksPaused"
+        :animation-time="animationTime"
+        @task-moved="onTaskMoved"
+        @task-updated="onTaskUpdated"
+        v-on:update:tasks="(tasks: Task[]) => (tasksPaused = tasks)"
+      />
+      <KanbanColumn
+        group="tasks"
+        :state="TaskState.IN_PROGRESS"
+        :tasks="tasksInProgess"
+        :animation-time="animationTime"
+        @task-moved="onTaskMoved"
+        @task-updated="onTaskUpdated"
+        v-on:update:tasks="(tasks: Task[]) => (tasksInProgess = tasks)"
+      />
+      <KanbanColumn
+        group="tasks"
+        :state="TaskState.DONE"
+        :tasks="tasksDone"
+        :animation-time="animationTime"
+        @task-moved="onTaskMoved"
+        @task-updated="onTaskUpdated"
+        v-on:update:tasks="(tasks: Task[]) => (tasksDone = tasks)"
+      />
     </div>
 
     <div>
@@ -236,3 +226,17 @@ onMounted(async () => {
     />
   </q-page-sticky>
 </template>
+
+<style>
+.kanban-board {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 360px;
+  grid-gap: 1rem;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  width: 360px;
+}
+</style>

@@ -38,7 +38,7 @@ watch(localTasks, (newTasks) => {
 </script>
 
 <template>
-  <q-card dark flat bordered class="full-height">
+  <q-card dark flat bordered class="full-height kanban-column">
     <q-card-section>
       <div class="text-h6 text-center">{{ state }} ({{ tasks.length }})</div>
     </q-card-section>
