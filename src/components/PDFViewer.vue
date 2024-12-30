@@ -4,7 +4,10 @@ import { onMounted } from "vue";
 import * as pdfjsLib from "./../lib/pdf.min.mjs";
 
 // Set the workerSrc to point to the PDF.js worker script
-pdfjsLib.GlobalWorkerOptions.workerSrc = "./../lib/pdf.worker.min.mjs";
+// pdfjsLib.GlobalWorkerOptions.workerSrc = "./../lib/pdf.worker.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = `${
+  import.meta.env.BASE_URL
+}pdf.worker.min.mjs`;
 
 const props = defineProps<{ pdfBase64: string }>();
 
