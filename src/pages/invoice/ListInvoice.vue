@@ -35,11 +35,12 @@ async function loadInvoiceSettings() {
   );
 }
 async function loadInvoices() {
-  invoices.value = (await ipcRenderer.invoke(
-    "storeGet",
-    "invoiceData",
-    "invoiceData"
-  )) as Invoice[];
+  invoices.value =
+    ((await ipcRenderer.invoke(
+      "storeGet",
+      "invoiceData",
+      "invoiceData"
+    )) as Invoice[]) || [];
 }
 async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
   await ipcRenderer.invoke(

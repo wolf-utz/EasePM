@@ -123,11 +123,12 @@ async function onRemoveCustomer() {
 }
 
 onMounted(async () => {
-  customers.value = (await ipcRenderer.invoke(
-    "storeGet",
-    "customerData",
-    "customerData"
-  )) as Customer[];
+  customers.value =
+    ((await ipcRenderer.invoke(
+      "storeGet",
+      "customerData",
+      "customerData"
+    )) as Customer[]) || [];
   loaded.value = true;
 });
 </script>

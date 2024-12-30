@@ -124,11 +124,12 @@ async function onRemoveProject() {
 }
 
 onMounted(async () => {
-  projects.value = (await ipcRenderer.invoke(
-    "storeGet",
-    "projectData",
-    "projectData"
-  )) as Project[];
+  projects.value =
+    ((await ipcRenderer.invoke(
+      "storeGet",
+      "projectData",
+      "projectData"
+    )) as Project[]) || [];
   loaded.value = true;
 });
 </script>

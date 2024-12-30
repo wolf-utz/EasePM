@@ -122,6 +122,15 @@ function onSubmit(): void {
       </template>
     </TwoColumn>
 
+    <TextField
+      label="Cuntry*"
+      hint="Country."
+      :validation="v$"
+      property="country"
+      :value="formData.country"
+      @change="(value: string) => (formData.country = value)"
+    />
+
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
         fab

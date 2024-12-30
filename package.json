@@ -1,9 +1,9 @@
 {
-  "name": "electron-vue-vite",
-  "version": "28.1.0",
+  "name": "ease-pm",
+  "version": "0.1.0",
   "main": "dist-electron/main/index.js",
-  "description": "Really simple Electron + Vue + Vite boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "description": "This is a micro CRM, project and invoice management software for very small companies.",
+  "author": "Wolf-Peter Utz <wolf@utz.it>",
   "license": "MIT",
   "private": true,
   "keywords": [

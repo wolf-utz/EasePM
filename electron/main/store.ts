@@ -60,6 +60,8 @@ class Store {
   }
 
   add(key: string, val: any) {
+    console.log("add data", this.data, key, val);
+
     this.data[key].push(val);
     fs.writeFileSync(this.path, JSON.stringify(this.data));
   }

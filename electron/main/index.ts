@@ -19,10 +19,22 @@ const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const stores = {
-  personalData: new Store({ configName: "personal-data", defaults: {} }),
-  customerData: new Store({ configName: "customer-data", defaults: {} }),
-  invoiceData: new Store({ configName: "invoice-data", defaults: {} }),
-  projectData: new Store({ configName: "project-data", defaults: {} }),
+  personalData: new Store({
+    configName: "personal-data",
+    defaults: { personalData: [] },
+  }),
+  customerData: new Store({
+    configName: "customer-data",
+    defaults: { customerData: [] },
+  }),
+  invoiceData: new Store({
+    configName: "invoice-data",
+    defaults: { invoiceData: [] },
+  }),
+  projectData: new Store({
+    configName: "project-data",
+    defaults: { projectData: [] },
+  }),
 };
 const fileManager: FileManager = new FileManager();
 
