@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "electron/main/pdf-invoice-generator.ts"],
+  "include": ["src"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]
