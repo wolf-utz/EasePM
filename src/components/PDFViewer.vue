@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted } from "vue";
+// @ts-ignore
 import * as pdfjsLib from "./../lib/pdf.min.mjs";
 
 // Set the workerSrc to point to the PDF.js worker script

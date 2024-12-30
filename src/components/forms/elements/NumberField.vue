@@ -16,6 +16,7 @@ const emit = defineEmits<{ (e: "change", value: number): void }>();
 const internalValue = ref<number>(props.value);
 
 function onChange(): void {
+  // @ts-ignore
   emit("change", parseInt(internalValue.value));
 }
 </script>
