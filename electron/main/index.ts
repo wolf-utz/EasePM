@@ -12,8 +12,10 @@ import {
   InvoiceSettings,
   LineItem,
   PersonalData,
+  TimesheetFilter,
 } from "./types.js";
 import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util.js";
+import { createTimeSheetReportCsvString } from "./time-sheet-report.js";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -105,6 +107,10 @@ ipcMain.handle("fileManagerGetInvoice", (_, fileName, isDraft) => {
   );
 });
 
+ipcMain.handle("fileManagerGetFileBase64", (_, absoluteFilePtah) => {
+  return fileManager.getAbsoluteFileBase64(absoluteFilePtah);
+});
+
 ipcMain.handle(
   "writeInvoiceDocument",
   async (_, invoiceId: string): Promise<string> => {
@@ -183,6 +189,13 @@ ipcMain.handle(
     );
 
     return path.join(exportDirectory, `${invoice.invoiceNumber}.pdf`);
+  }
+);
+
+ipcMain.handle(
+  "createTimeSheetReportCsvString",
+  (_, filter: TimesheetFilter) => {
+    return createTimeSheetReportCsvString(filter);
   }
 );
 

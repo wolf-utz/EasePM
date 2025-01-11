@@ -17,6 +17,8 @@ import ListProjects from "./pages/projects/ListProjects.vue";
 import EditProject from "./pages/projects/EditProject.vue";
 import NewProject from "./pages/projects/NewProject.vue";
 import KanbanBoard from "./pages/projects/KanbanBoard.vue";
+import ListReports from "./pages/reports/ListReports.vue";
+import TimeSheet from "./pages/reports/TimeSheet.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -24,7 +26,7 @@ const routes: RouteRecordRaw[] = [
     name: "dashboard",
     component: Dashboard,
     meta: {
-      title: "Your Dashboard",
+      title: "Dashboard",
     },
   },
   {
@@ -32,7 +34,7 @@ const routes: RouteRecordRaw[] = [
     name: "account",
     component: AccountPage,
     meta: {
-      title: "Your Account",
+      title: "Account",
     },
   },
   {
@@ -40,7 +42,7 @@ const routes: RouteRecordRaw[] = [
     name: "customer",
     component: ListCustomer,
     meta: {
-      title: "Manage your customers",
+      title: "Customers",
     },
   },
   {
@@ -65,7 +67,7 @@ const routes: RouteRecordRaw[] = [
     name: "invoices",
     component: ListInvoice,
     meta: {
-      title: "View all invoices",
+      title: "Invoices",
     },
   },
   {
@@ -98,7 +100,7 @@ const routes: RouteRecordRaw[] = [
     name: "projects",
     component: ListProjects,
     meta: {
-      title: "Your projects",
+      title: "Projects",
     },
   },
   {
@@ -132,7 +134,7 @@ const routes: RouteRecordRaw[] = [
     name: "offers",
     component: Dashboard,
     meta: {
-      title: "Your offers",
+      title: "Offers",
     },
   },
   {
@@ -144,19 +146,11 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: "/work-logs",
-    name: "work-logs",
-    component: Dashboard,
+    path: "/reports/time-sheet",
+    name: "reports/time-sheet",
+    component: TimeSheet,
     meta: {
-      title: "Your work-logs",
-    },
-  },
-  {
-    path: "/reports",
-    name: "reports",
-    component: Dashboard,
-    meta: {
-      title: "Your reports",
+      title: "Time sheet Report",
     },
   },
 ];

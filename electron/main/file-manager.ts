@@ -71,12 +71,11 @@ class FileManager {
    * @param fileName - The name of the file.
    * @returns The blob of the file.
    */
-  getFileBlob(folderPath: string, fileName: string): Buffer | null {
-    const filePath = this.getAbsolutePath(folderPath, fileName);
-    if (this.fileExists(folderPath, fileName)) {
-      return fs.readFileSync(filePath);
+  getFileBlob(filePath: string): Buffer | null {
+    if (!fs.existsSync(filePath)) {
+      return null;
     }
-    return null;
+    return fs.readFileSync(filePath);
   }
 
   /**
@@ -86,11 +85,23 @@ class FileManager {
    * @returns The base64 string of the file.
    */
   getFileBase64(folderPath: string, fileName: string): string | null {
-    const fileBlob = this.getFileBlob(folderPath, fileName);
-    if (this.fileExists(folderPath, fileName)) {
-      return fileBlob.toString("base64");
-    }
-    return null;
+    const fileBlob = this.getFileBlob(
+      this.getAbsolutePath(folderPath, fileName)
+    );
+
+    return fileBlob?.toString("base64") || null;
+  }
+
+  /**
+   * Returns the base64 string of a file given a folder path and file name.
+   * @param folderPath - The path to the folder.
+   * @param fileName - The name of the file.
+   * @returns The base64 string of the file.
+   */
+  getAbsoluteFileBase64(absoluteFilePath: string): string | null {
+    const fileBlob = this.getFileBlob(absoluteFilePath);
+
+    return fileBlob?.toString("base64") || null;
   }
 }
 

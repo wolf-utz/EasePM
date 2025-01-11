@@ -83,11 +83,14 @@ function toggleLeftDrawer() {
               <q-item-section> Customers </q-item-section>
             </q-item>
 
-            <q-item to="/reports" exact :disable="true">
+            <q-separator />
+            <q-item-label header>Reports</q-item-label>
+
+            <q-item to="/reports/time-sheet" exact>
               <q-item-section avatar>
-                <q-icon name="description" />
+                <q-icon name="summarize" />
               </q-item-section>
-              <q-item-section> Reports </q-item-section>
+              <q-item-section> Time sheet </q-item-section>
             </q-item>
 
             <q-separator />
