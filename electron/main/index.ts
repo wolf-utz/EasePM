@@ -199,6 +199,10 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle("getAppVersion", () => {
+  return app.getVersion();
+});
+
 // The built directory structure
 //
 // ├─┬ dist-electron

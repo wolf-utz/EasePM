@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import type { Ref } from "vue";
 import { useRoute } from "vue-router";
 
+// @ts-ignore
+const ipcRenderer: ElectronApi = window.ipcRenderer;
 const leftDrawerOpen: Ref<boolean> = ref(false);
 const route = useRoute();
-
+const version = ref<string>("-");
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+onMounted(async () => {
+  version.value = (await ipcRenderer.invoke("getAppVersion")) as string;
+});
 </script>
 
 <template>
@@ -126,7 +132,7 @@ function toggleLeftDrawer() {
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar class="justify-end">
-        <p class="q-mb-none text-right">Alpha | Version 0.0.1</p>
+        <p class="q-mb-none text-right">Alpha | Version {{ version }}</p>
       </q-toolbar>
     </q-footer>
   </q-layout>
