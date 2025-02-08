@@ -199,6 +199,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
     :rows="invoices"
     :columns="columns"
     row-key="customerNumber"
+    :rows-per-page-options="[25, 50, 100]"
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">

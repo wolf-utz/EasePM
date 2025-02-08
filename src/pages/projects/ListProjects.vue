@@ -144,6 +144,7 @@ onMounted(async () => {
     :rows="projects"
     :columns="columns"
     row-key="projectNumber"
+    :rows-per-page-options="[25, 50, 100]"
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">

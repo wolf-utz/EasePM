@@ -41,6 +41,7 @@ async function loadInvoices() {
       "invoiceData",
       "invoiceData"
     )) as Invoice[]) || [];
+  invoices.value.sort((a, b) => b.invoiceDate - a.invoiceDate);
 }
 async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
   await ipcRenderer.invoke(
