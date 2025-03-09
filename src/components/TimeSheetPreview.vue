@@ -6,6 +6,7 @@ import { ref } from "vue";
 import { convertUnixTimestampToTimeInput } from "../util/time-string-to-unix";
 import { saveAs } from "file-saver";
 import { base64ToBlob } from "../util/base64-to-blob";
+import { QTableProps } from "quasar";
 
 interface Props {
   filter: TimesheetFilter;
@@ -35,7 +36,16 @@ const total = computed(() =>
   reportDataRows.value.reduce((sum, row) => sum + row.workLog.trackedTime, 0)
 );
 
-const columns = [
+const columns: Array<{
+  name: string;
+  label: string;
+  field: string | ((row: any) => any);
+  required?: boolean;
+  align?: "left" | "right" | "center";
+  sortable?: boolean;
+  sort?: (a: any, b: any, rowA: any, rowB: any) => number;
+  style?: string;
+}> = [
   {
     name: "project",
     required: true,
