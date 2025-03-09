@@ -43,6 +43,13 @@ export function createTimeSheetReportCsvString(
   return reportFilePath;
 }
 
+export function createTimeSheetReportData(
+  filter: TimesheetFilter
+): ReportDataRow[] {
+  const projects = fetchProjectsByFilter(filter);
+  return collectReportData(filter.startDate, filter.endDate, projects);
+}
+
 function fetchCustomerByFilter(filter: TimesheetFilter): Customer {
   const store = new Store({
     configName: "customer-data",
@@ -60,6 +67,7 @@ function fetchCustomerByFilter(filter: TimesheetFilter): Customer {
 
   return customer;
 }
+
 function fetchProjectsByFilter(filter: TimesheetFilter): Project[] {
   const store = new Store({
     configName: "project-data",

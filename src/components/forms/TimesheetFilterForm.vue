@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import { useQuasar } from "quasar";
@@ -20,6 +20,9 @@ const emit = defineEmits<{
 }>();
 
 const formData = reactive<TimesheetFilter>(props.formData);
+const canSubmit = computed(
+  () => formData._customerId && formData.startDate && formData.endDate
+);
 const $q = useQuasar();
 const rules = {
   startDate: { required },
@@ -49,7 +52,7 @@ function onSubmit(): void {
 <template>
   <q-form
     @submit="onSubmit"
-    class="time-sheet-filter row q-col-gutter-md items-center"
+    class="time-sheet-filter row q-col-gutter-md items-center q-mb-xl"
   >
     <div class="col col-sm-6 col-md-2">
       <DateField
@@ -98,7 +101,13 @@ function onSubmit(): void {
       />
     </div>
     <div class="col col-sm-6 col-md-1">
-      <q-btn icon="save" type="submit" color="primary" title="Apply filter" />
+      <q-btn
+        icon="save"
+        type="submit"
+        color="primary"
+        title="Apply filter"
+        :disable="!canSubmit"
+      />
     </div>
   </q-form>
 </template>

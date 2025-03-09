@@ -15,7 +15,10 @@ import {
   TimesheetFilter,
 } from "./types.js";
 import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util.js";
-import { createTimeSheetReportCsvString } from "./time-sheet-report.js";
+import {
+  createTimeSheetReportCsvString,
+  createTimeSheetReportData,
+} from "./time-sheet.js";
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -198,6 +201,10 @@ ipcMain.handle(
     return createTimeSheetReportCsvString(filter);
   }
 );
+
+ipcMain.handle("createTimeSheetReportData", (_, filter: TimesheetFilter) => {
+  return createTimeSheetReportData(filter);
+});
 
 ipcMain.handle("getAppVersion", () => {
   return app.getVersion();
