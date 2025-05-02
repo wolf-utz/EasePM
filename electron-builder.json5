@@ -11,6 +11,7 @@
   mac: {
     target: ["dmg"],
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    icon: "build/icons/icon.icns",
   },
   win: {
     target: [
