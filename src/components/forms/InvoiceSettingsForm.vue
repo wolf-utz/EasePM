@@ -15,6 +15,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "submit", formData: InvoiceSettings): void;
 }>();
+const ipcRenderer = window.ipcRenderer;
 const $q = useQuasar();
 const rules = {
   defaultFont: { required },
@@ -27,9 +28,11 @@ const rules = {
   taxHint: { required },
   outroText: { required },
   signature: { required },
+  logo: { required },
 };
 const v$ = useVuelidate(rules, props.formData);
 const logo = ref<File | null>(null);
+const logoSrc = ref<string | null>(null);
 
 function onSubmit(): void {
   v$.value.$touch();
@@ -43,18 +46,23 @@ function onSubmit(): void {
     type: "negative",
     timeout: 1500,
     position: "top",
-    message: "The submited data is not valid. Please check the form.",
+    message: "The submitted data is not valid. Please check the form.",
   });
 }
 
 onMounted(async () => {
   if (props.formData.logo) {
-    const fileName = props.formData.logo.split("/").pop();
-    const response = await fetch(props.formData.logo);
-    const blob = await response.blob();
-    logo.value = new File([blob], fileName || "unknown");
+    logoSrc.value = await ipcRenderer.invoke('readImage', props.formData.logo);
   }
 });
+
+async function onUploadLogo() {
+  const filePath = await ipcRenderer.invoke('dialog:openFile');
+  if (filePath) {
+    props.formData.logo = filePath;
+    logoSrc.value = await ipcRenderer.invoke('readImage', filePath);
+  }
+}
 </script>
 
 <template>
@@ -153,17 +161,36 @@ onMounted(async () => {
       @change="(value: string) => (formData.signature = value)"
     />
 
-    <q-file
-      dark
-      v-model="logo"
-      label="Invoice logo"
-      hint="Set the path of your logo file. This file wont be moved into the application."
-      @update:modelValue="() => (formData.logo = logo?.path)"
-    >
-      <template v-slot:prepend>
-        <q-icon name="attach_file" />
-      </template>
-    </q-file>
+    <div class="">
+<!--    @todo move this to its own component and allow error state.  -->
+      <label class="q-field row no-wrap items-start q-field--filled q-textarea q-textarea--autogrow q-field--float q-field--labeled q-field--dark q-field--with-bottom">
+        <div class="q-field__inner relative-position col self-stretch">
+          <div class="q-field__control relative-position row no-wrap"
+               tabindex="-1">
+            <div class="q-field__control-container col relative-position row no-wrap q-anchor--skip" style="">
+              <q-btn color="secondary" @click="onUploadLogo" icon="attach_file" label="Upload invoice logo" />
+              <q-img
+                  v-if="logoSrc"
+                  :src="logoSrc"
+                  height="auto"
+                  width="180px"
+                  spinner-color="white"
+              />
+              <div class="q-field__label no-pointer-events absolute ellipsis">
+                Invoice logo
+              </div>
+            </div>
+          </div>
+          <div class="q-field__bottom row items-start q-field__bottom--animated">
+            <div class="q-field__messages col">
+              <div>
+                Your invoice logo. Has to be a .PNG file.
+              </div>
+            </div>
+          </div>
+        </div>
+      </label>
+    </div>
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
