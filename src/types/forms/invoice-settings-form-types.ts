@@ -9,5 +9,5 @@ export interface InvoiceSettings {
   taxHint: string;
   outroText: string;
   signature: string;
-  logo?: string;
+  logo: string;
 }

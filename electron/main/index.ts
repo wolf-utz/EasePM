@@ -19,6 +19,8 @@ import {
   createTimeSheetReportCsvString,
   createTimeSheetReportData,
 } from "./time-sheet.js";
+import { openFileDialog} from "./io/file-dialog";
+import fs from 'fs/promises';
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -208,6 +210,22 @@ ipcMain.handle("createTimeSheetReportData", (_, filter: TimesheetFilter) => {
 
 ipcMain.handle("getAppVersion", () => {
   return app.getVersion();
+});
+
+ipcMain.handle("dialog:openFile", async() => {
+  const win = BrowserWindow.getFocusedWindow();
+  if (!win) {
+    return null;
+  }
+
+  return await openFileDialog(win);
+});
+
+ipcMain.handle('readImage', async (_event, filePath: string) => {
+  const buffer = await fs.readFile(filePath);
+  const base64 = buffer.toString('base64');
+  const mimeType = 'image/png'; // or determine from file extension
+  return `data:${mimeType};base64,${base64}`;
 });
 
 // The built directory structure
