@@ -1,246 +1,20 @@
-import { app, BrowserWindow, shell, ipcMain, dialog } from "electron";
-import { createRequire } from "node:module";
+import "reflect-metadata"
+import { app, BrowserWindow, shell } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
-import Store from "./store.js";
-import FileManager from "./file-manager.js";
-import { createInvoicePdf } from "./pdf-invoice-generator.js";
-import {
-  Customer,
-  Invoice,
-  InvoiceSettings,
-  LineItem,
-  PersonalData,
-  TimesheetFilter,
-} from "./types.js";
-import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util.js";
-import {
-  createTimeSheetReportCsvString,
-  createTimeSheetReportData,
-} from "./time-sheet.js";
-import { openFileDialog} from "./io/file-dialog";
-import fs from 'fs/promises';
+import { AppDataSource } from "../data-source"
+import {registerIpcHandlers} from  "./ipc-handlers";
 
-const require = createRequire(import.meta.url);
+// Initialize the database.
+AppDataSource.initialize().then(() => console.log("Database initialized!"));
+
+// Register IPC handlers.
+registerIpcHandlers();
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const stores = {
-  personalData: new Store({
-    configName: "personal-data",
-    defaults: { personalData: [] },
-  }),
-  customerData: new Store({
-    configName: "customer-data",
-    defaults: { customerData: [] },
-  }),
-  invoiceData: new Store({
-    configName: "invoice-data",
-    defaults: { invoiceData: [] },
-  }),
-  projectData: new Store({
-    configName: "project-data",
-    defaults: { projectData: [] },
-  }),
-};
-const fileManager: FileManager = new FileManager();
-
-ipcMain.handle("storeSet", (_, storeName, key, value) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  targetStore.set(key, value);
-});
-
-ipcMain.handle("storeGet", (_, storeName, key) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  return targetStore.get(key);
-});
-
-ipcMain.handle("storeGetSingle", (_, storeName, key, id) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  return targetStore.getSingle(key, id);
-});
-
-ipcMain.handle("storeAdd", (_, storeName, key, value) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  targetStore.add(key, value);
-});
-
-ipcMain.handle("storeUpdate", (_, storeName, key, id, value) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  targetStore.update(key, id, value);
-});
-
-ipcMain.handle("storeRemoveSingle", (_, storeName, key, id) => {
-  const targetStore = stores[storeName] || null;
-  if (targetStore === null) {
-    throw new Error(`Requested not existing store "${storeName}".`);
-  }
-
-  return targetStore.removeSingle(key, id);
-});
-
-ipcMain.handle("fileManagerGetInvoice", (_, fileName, isDraft) => {
-  const userDataPath = app.getPath("userData");
-
-  return fileManager.getFileBase64(
-    path.join(
-      userDataPath,
-      "ease-pm-data",
-      isDraft ? "invoices-draft" : "invoices"
-    ),
-    fileName
-  );
-});
-
-ipcMain.handle("fileManagerGetFileBase64", (_, absoluteFilePtah) => {
-  return fileManager.getAbsoluteFileBase64(absoluteFilePtah);
-});
-
-ipcMain.handle(
-  "writeInvoiceDocument",
-  async (_, invoiceId: string): Promise<string> => {
-    const personalData: PersonalData =
-      stores["personalData"].get("personalData");
-    const invoiceSettings: InvoiceSettings =
-      stores["invoiceData"].get("invoiceSettings");
-    const invoice: Invoice = stores["invoiceData"].getSingle(
-      "invoiceData",
-      invoiceId
-    );
-    const customer: Customer = stores["customerData"].getSingle(
-      "customerData",
-      invoice._customerId
-    );
-    const exportDirectory = path.join(
-      app.getPath("userData"),
-      "ease-pm-data",
-      invoice.draft ? "invoices-draft" : "invoices"
-    );
-
-    await createInvoicePdf(
-      {
-        font: {
-          size: invoiceSettings.fontSize,
-          default: invoiceSettings.defaultFont,
-          bold: invoiceSettings.boldFont,
-          sizeSmall: invoiceSettings.fontSizeSmall,
-        },
-        seller: {
-          name: personalData.firstName + " " + personalData.lastName,
-          address: personalData.address,
-          zip: personalData.zip,
-          city: personalData.city,
-          country: personalData.country,
-          taxNumber: personalData.taxNumber,
-          email: personalData.email,
-          banking: {
-            bank: personalData.banking.bank,
-            iban: personalData.banking.iban,
-            bic: personalData.banking.bic,
-          },
-        },
-        buyer: {
-          company: customer.company,
-          name: customer.firstName + " " + customer.lastName,
-          address: customer.address,
-          zip: customer.zip,
-          city: customer.city,
-          customerNumber: customer.customerNumber,
-        },
-        invoiceNumber: invoice.invoiceNumber,
-        invoiceDate: formatUnixTimestampToGermanDate(invoice.invoiceDate),
-        deliveryDate: formatUnixTimestampToGermanDate(invoice.deliveryDate),
-        title: invoiceSettings.title,
-        introText: invoiceSettings.introText,
-        outroText: invoiceSettings.outroText,
-        taxHint: invoiceSettings.taxHint,
-        paymentNote: invoiceSettings.paymentNote,
-        signature: invoiceSettings.signature,
-        total: invoice.total,
-        lineItems: invoice.lineItems.map((lineItem: LineItem) => {
-          return {
-            qty: lineItem.quantity,
-            description: lineItem.description,
-            unit: lineItem.unit,
-            unitPrice: lineItem.unitPrice,
-            unitTotal: lineItem.unitTotal,
-            title: lineItem.title,
-          };
-        }),
-        logo: invoiceSettings.logo || "",
-      },
-      exportDirectory,
-      invoice.draft
-    );
-
-    return path.join(exportDirectory, `${invoice.invoiceNumber}.pdf`);
-  }
-);
-
-ipcMain.handle(
-  "createTimeSheetReportCsvString",
-  (_, filter: TimesheetFilter) => {
-    return createTimeSheetReportCsvString(filter);
-  }
-);
-
-ipcMain.handle("createTimeSheetReportData", (_, filter: TimesheetFilter) => {
-  return createTimeSheetReportData(filter);
-});
-
-ipcMain.handle("getAppVersion", () => {
-  return app.getVersion();
-});
-
-ipcMain.handle("dialog:openFile", async() => {
-  const win = BrowserWindow.getFocusedWindow();
-  if (!win) {
-    return null;
-  }
-
-  return await openFileDialog(win);
-});
-
-ipcMain.handle('readImage', async (_event, filePath: string) => {
-  const buffer = await fs.readFile(filePath);
-  const base64 = buffer.toString('base64');
-  const mimeType = 'image/png'; // or determine from file extension
-  return `data:${mimeType};base64,${base64}`;
-});
-
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.mjs   > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
 process.env.APP_ROOT = path.join(__dirname, "../..");
 
-export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 export const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL;
 
@@ -269,21 +43,13 @@ async function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // nodeIntegration: true,
-
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      // contextIsolation: false,
     },
     width: 1024,
     height: 940,
   });
 
   if (VITE_DEV_SERVER_URL) {
-    // #298
     win.loadURL(VITE_DEV_SERVER_URL);
-    // Open devTool if the app is not packaged
     win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml);
@@ -299,8 +65,6 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
-  // win.webContents.on('will-navigate', (event, url) => { }) #344
-  // win.removeMenu();
 }
 
 app.whenReady().then(createWindow);
@@ -324,22 +88,5 @@ app.on("activate", () => {
     allWindows[0].focus();
   } else {
     createWindow();
-  }
-});
-
-// New window example arg: new windows url
-ipcMain.handle("open-win", (_, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-
-  if (VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${VITE_DEV_SERVER_URL}#${arg}`);
-  } else {
-    childWindow.loadFile(indexHtml, { hash: arg });
   }
 });

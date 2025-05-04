@@ -1,18 +1,11 @@
 {
   "name": "ease-pm",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "main": "dist-electron/main/index.js",
   "description": "This is a micro CRM, project and invoice management software for very small companies.",
   "author": "Wolf-Peter Utz <wolf@utz.it>",
   "license": "MIT",
   "private": true,
-  "keywords": [
-    "electron",
-    "rollup",
-    "vite",
-    "vue3",
-    "vue"
-  ],
   "debug": {
     "env": {
       "VITE_DEV_SERVER_URL": "http://127.0.0.1:3344/"
@@ -22,17 +15,22 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && electron-builder",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "electron-builder install-app-deps",
+    "typeorm": "typeorm-ts-node-commonjs"
   },
   "devDependencies": {
+    "@types/node": "^22.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2",
     "@quasar/vite-plugin": "^1.8.0",
     "@types/file-saver": "^2.0.7",
     "@types/pdfkit": "^0.13.5",
     "@vitejs/plugin-vue": "^5.0.4",
     "electron": "^35.2.1",
     "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9",
     "sass": "^1.80.4",
-    "typescript": "^5.4.2",
     "vite": "^5.1.5",
     "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5",
@@ -43,12 +41,15 @@
     "@quasar/extras": "^1.16.12",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
+    "better-sqlite3": "^11.9.1",
     "electron-store": "^10.0.0",
     "file-saver": "^2.0.5",
     "moment": "^2.30.1",
     "pdfjs-dist": "^4.7.76",
     "pdfkit": "^0.15.1",
     "quasar": "^2.17.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "0.3.22",
     "uuid": "^11.0.2",
     "vue-router": "^4.4.5",
     "vuedraggable": "^4.1.0",
