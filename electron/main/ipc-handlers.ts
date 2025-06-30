@@ -1,6 +1,16 @@
 import {app, BrowserWindow, ipcMain} from "electron";
 import path from "node:path";
-import {Customer, Invoice, InvoiceSettings, LineItem, PersonalData, TimesheetFilter} from "./types";
+import {
+    Customer,
+    Invoice,
+    InvoiceSettings,
+    LineItem,
+    PersonalData,
+    Project,
+    Task,
+    TimesheetFilter,
+    WorkLog
+} from "./types";
 import {createInvoicePdf} from "./pdf-invoice-generator";
 import {formatUnixTimestampToGermanDate} from "./util/timestamp-date-util";
 import {createTimeSheetReportCsvString, createTimeSheetReportData} from "./time-sheet";
@@ -212,5 +222,45 @@ export function registerIpcHandlers() {
         const base64 = buffer.toString('base64');
         const mimeType = 'image/png'; // or determine from file extension
         return `data:${mimeType};base64,${base64}`;
+    });
+
+    ipcMain.handle('getMonthlyAnalytics', async (_event, year?: number) => {
+        try {
+            const targetYear = year || new Date().getFullYear();
+            const projects : Project[] = stores.projectData.get('projectData') || [];
+            const monthlyTotals = new Array(12).fill(0);
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            projects.forEach((project: Project) => {
+                if (!project.tasks || !Array.isArray(project.tasks) || project.tasks.length === 0) {
+                    return;
+                }
+                project.tasks.forEach((task: Task) => {
+                    if (!task.workLogs || !Array.isArray(task.workLogs)) {
+                        return;
+                    }
+                    task.workLogs.forEach((workLog: WorkLog) => {
+                        if (!workLog.displayDateTime || !workLog.trackedTime) {
+                            return;
+                        }
+                        const logDate = new Date(workLog.displayDateTime * 1000);
+                        const logYear = logDate.getFullYear();
+                        if (logYear === targetYear) {
+                            const monthIndex = logDate.getMonth(); // 0-11
+                            const hoursWorked = workLog.trackedTime / 3600; // Convert seconds to hours
+                            monthlyTotals[monthIndex] += hoursWorked;
+                        }
+                    });
+                });
+            });
+            
+            // Format and return response data
+            return monthNames.map((month, index) => ({
+                month: month,
+                hours: Math.round(monthlyTotals[index] * 100) / 100 // Round to 2 decimal places
+            }));
+        } catch (error) {
+            console.error('[Analytics] Error fetching monthly analytics:', error);
+            throw new Error(`Failed to fetch analytics data: ${error.message}`);
+        }
     });
 }
