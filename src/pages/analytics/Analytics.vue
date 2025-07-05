@@ -4,38 +4,38 @@
     <div class="row items-center justify-between q-mb-lg">
       <div class="text-h4 text-white">Analytics Dashboard</div>
       <q-select
-        v-model="currentYear"
-        :options="yearOptions"
-        dense
-        outlined
-        dark
-        class="year-selector"
-        @update:model-value="onYearChange"
-        :disable="loading"
+          v-model="currentYear"
+          :options="yearOptions"
+          dense
+          outlined
+          dark
+          class="year-selector"
+          @update:model-value="onYearChange"
+          :disable="loading"
       />
     </div>
-    
+
     <!-- Loading State -->
     <div v-if="loading" class="text-center q-pa-xl">
-      <q-spinner size="50px" color="primary" />
+      <q-spinner size="50px" color="primary"/>
       <div class="q-mt-md text-white">Loading analytics data...</div>
     </div>
-    
+
     <!-- Error State -->
     <div v-else-if="error" class="text-center q-pa-xl">
-      <q-icon name="error" size="50px" color="negative" />
+      <q-icon name="error" size="50px" color="negative"/>
       <div class="q-mt-md text-negative">
         <div class="text-h6">Error Loading Analytics</div>
         <div class="q-mt-sm">{{ error }}</div>
-        <q-btn 
-          color="primary" 
-          label="Retry" 
-          @click="loadAnalyticsData" 
-          class="q-mt-md"
+        <q-btn
+            color="primary"
+            label="Retry"
+            @click="loadAnalyticsData"
+            class="q-mt-md"
         />
       </div>
     </div>
-    
+
     <!-- Main Analytics Content -->
     <div v-else-if="analyticsData.length > 0" class="analytics-content">
       <!-- Summary Cards Row -->
@@ -49,13 +49,13 @@
                   <div class="text-h4 text-white">{{ totalHours }}</div>
                 </div>
                 <div class="col-auto">
-                  <q-icon name="schedule" size="40px" class="text-white opacity-60" />
+                  <q-icon name="schedule" size="40px" class="text-white opacity-60"/>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
-        
+
         <div class="col">
           <q-card dark class="summary-card bg-gradient-secondary">
             <q-card-section>
@@ -65,13 +65,13 @@
                   <div class="text-h4 text-white">{{ avgHoursPerMonth }}</div>
                 </div>
                 <div class="col-auto">
-                  <q-icon name="trending_up" size="40px" class="text-white opacity-60" />
+                  <q-icon name="trending_up" size="40px" class="text-white opacity-60"/>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
-        
+
         <div class="col">
           <q-card dark class="summary-card bg-gradient-accent">
             <q-card-section>
@@ -82,13 +82,13 @@
                   <div class="text-caption text-grey-4">{{ peakHours }}h</div>
                 </div>
                 <div class="col-auto">
-                  <q-icon name="star" size="40px" class="text-white opacity-60" />
+                  <q-icon name="star" size="40px" class="text-white opacity-60"/>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
-        
+
         <div class="col">
           <q-card dark class="summary-card bg-gradient-positive">
             <q-card-section>
@@ -97,19 +97,19 @@
                   <div class="text-subtitle2 text-grey-3">This Month</div>
                   <div class="text-h4 text-white">{{ currentMonthHours }}</div>
                   <div class="text-caption" :class="trendClass">
-                    <q-icon :name="trendIcon" size="16px" />
+                    <q-icon :name="trendIcon" size="16px"/>
                     {{ trendText }}
                   </div>
                 </div>
                 <div class="col-auto">
-                  <q-icon name="today" size="40px" class="text-white opacity-60" />
+                  <q-icon name="today" size="40px" class="text-white opacity-60"/>
                 </div>
               </div>
             </q-card-section>
           </q-card>
         </div>
       </div>
-      
+
       <!-- Chart Card -->
       <q-card dark class="chart-card">
         <q-card-section>
@@ -117,12 +117,12 @@
             <div class="text-h6 text-white">Monthly Hours Breakdown</div>
             <div class="chart-controls">
               <q-btn-toggle
-                v-model="chartType"
-                toggle-color="primary"
-                :options="chartTypeOptions"
-                dense
-                class="text-white"
-                @update:model-value="updateChart"
+                  v-model="chartType"
+                  toggle-color="primary"
+                  :options="chartTypeOptions"
+                  dense
+                  class="text-white"
+                  @update:model-value="updateChart"
               />
             </div>
           </div>
@@ -131,35 +131,35 @@
           </div>
         </q-card-section>
       </q-card>
-      
+
       <!-- Insights Card -->
       <q-card dark class="insights-card q-mt-lg">
         <q-card-section>
           <div class="text-h6 text-white q-mb-md">
-            <q-icon name="lightbulb" class="q-mr-sm" />
+            <q-icon name="lightbulb" class="q-mr-sm"/>
             Insights
           </div>
           <div class="insights-grid">
             <div v-for="insight in insights" :key="insight.id" class="insight-item">
-              <q-icon :name="insight.icon" :color="insight.color" class="q-mr-sm" />
+              <q-icon :name="insight.icon" :color="insight.color" class="q-mr-sm"/>
               <span class="text-grey-3">{{ insight.text }}</span>
             </div>
           </div>
         </q-card-section>
       </q-card>
     </div>
-    
+
     <!-- No Data State -->
     <div v-else class="text-center q-pa-xl">
-      <q-icon name="analytics" size="50px" color="grey-5" />
+      <q-icon name="analytics" size="50px" color="grey-5"/>
       <div class="q-mt-md text-grey-4">
         <div class="text-h6">No Analytics Data</div>
         <div class="q-mt-sm">No work logs found for {{ currentYear }}</div>
-        <q-btn 
-          color="primary" 
-          label="Refresh" 
-          @click="loadAnalyticsData" 
-          class="q-mt-md"
+        <q-btn
+            color="primary"
+            label="Refresh"
+            @click="loadAnalyticsData"
+            class="q-mt-md"
         />
       </div>
     </div>
@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import {ref, watch, computed} from 'vue'
 import {
   Chart,
   CategoryScale,
@@ -185,16 +185,16 @@ import {
 
 // Register Chart.js components
 Chart.register(
-  CategoryScale, 
-  LinearScale, 
-  BarElement, 
-  BarController, 
-  LineController,
-  LineElement,
-  PointElement,
-  Title, 
-  Tooltip, 
-  Legend
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    BarController,
+    LineController,
+    LineElement,
+    PointElement,
+    Title,
+    Tooltip,
+    Legend
 )
 
 // Types
@@ -241,8 +241,8 @@ const yearOptions = computed(() => {
 
 // Chart type options
 const chartTypeOptions = [
-  { label: 'Bar', value: 'bar' },
-  { label: 'Line', value: 'line' }
+  {label: 'Bar', value: 'bar'},
+  {label: 'Line', value: 'line'}
 ]
 
 // Summary metrics computed properties
@@ -261,16 +261,16 @@ const avgHoursPerMonth = computed(() => {
 
 const peakMonth = computed(() => {
   if (!analyticsData.value.length) return '-'
-  const peak = analyticsData.value.reduce((max, item) => 
-    item.hours > max.hours ? item : max
+  const peak = analyticsData.value.reduce((max, item) =>
+      item.hours > max.hours ? item : max
   )
   return peak.month
 })
 
 const peakHours = computed(() => {
   if (!analyticsData.value.length) return '0'
-  const peak = analyticsData.value.reduce((max, item) => 
-    item.hours > max.hours ? item : max
+  const peak = analyticsData.value.reduce((max, item) =>
+      item.hours > max.hours ? item : max
   )
   return Math.round(peak.hours)
 })
@@ -286,23 +286,23 @@ const currentMonthHours = computed(() => {
 
 // Trend calculations
 const trend = computed(() => {
-  if (!analyticsData.value.length) return { direction: 'neutral', percentage: 0 }
-  
+  if (!analyticsData.value.length) return {direction: 'neutral', percentage: 0}
+
   const currentMonth = new Date().getMonth()
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  
+
   const currentMonthName = monthNames[currentMonth]
   const previousMonthName = monthNames[currentMonth - 1] || monthNames[11]
-  
+
   const currentHours = analyticsData.value.find(item => item.month === currentMonthName)?.hours || 0
   const previousHours = analyticsData.value.find(item => item.month === previousMonthName)?.hours || 0
-  
-  if (previousHours === 0) return { direction: 'neutral', percentage: 0 }
-  
+
+  if (previousHours === 0) return {direction: 'neutral', percentage: 0}
+
   const change = ((currentHours - previousHours) / previousHours) * 100
   const direction = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
-  
-  return { direction, percentage: Math.abs(Math.round(change)) }
+
+  return {direction, percentage: Math.abs(Math.round(change))}
 })
 
 const trendClass = computed(() => ({
@@ -313,9 +313,12 @@ const trendClass = computed(() => ({
 
 const trendIcon = computed(() => {
   switch (trend.value.direction) {
-    case 'up': return 'trending_up'
-    case 'down': return 'trending_down'
-    default: return 'trending_flat'
+    case 'up':
+      return 'trending_up'
+    case 'down':
+      return 'trending_down'
+    default:
+      return 'trending_flat'
   }
 })
 
@@ -328,14 +331,14 @@ const trendText = computed(() => {
 // AI-powered insights
 const insights = computed((): Insight[] => {
   if (!analyticsData.value.length) return []
-  
+
   const insights: Insight[] = []
   const total = analyticsData.value.reduce((sum, item) => sum + item.hours, 0)
   const avg = total / 12
-  
+
   // Peak month insight
-  const peak = analyticsData.value.reduce((max, item) => 
-    item.hours > max.hours ? item : max
+  const peak = analyticsData.value.reduce((max, item) =>
+      item.hours > max.hours ? item : max
   )
   insights.push({
     id: 'peak',
@@ -343,10 +346,10 @@ const insights = computed((): Insight[] => {
     color: 'yellow',
     text: `${peak.month} was your most productive month with ${Math.round(peak.hours)} hours`
   })
-  
+
   // Low activity insight
-  const low = analyticsData.value.reduce((min, item) => 
-    item.hours < min.hours ? item : min
+  const low = analyticsData.value.reduce((min, item) =>
+      item.hours < min.hours ? item : min
   )
   if (low.hours < avg * 0.5) {
     insights.push({
@@ -356,13 +359,13 @@ const insights = computed((): Insight[] => {
       text: `${low.month} had minimal activity with only ${Math.round(low.hours)} hours`
     })
   }
-  
+
   // Consistency insight
-  const variance = analyticsData.value.reduce((sum, item) => 
-    sum + Math.pow(item.hours - avg, 2), 0
+  const variance = analyticsData.value.reduce((sum, item) =>
+      sum + Math.pow(item.hours - avg, 2), 0
   ) / 12
   const stdDev = Math.sqrt(variance)
-  
+
   if (stdDev < avg * 0.3) {
     insights.push({
       id: 'consistent',
@@ -378,7 +381,7 @@ const insights = computed((): Insight[] => {
       text: 'Your work hours vary significantly between months'
     })
   }
-  
+
   return insights
 })
 
@@ -388,7 +391,7 @@ const handleError = (errorMessage: string, originalError?: any): void => {
     code: originalError?.code || 'UNKNOWN_ERROR',
     timestamp: Date.now()
   }
-  
+
   error.value = analyticsError.message
   loading.value = false
 }
@@ -397,7 +400,7 @@ const validateAnalyticsData = (data: any): data is MonthlyAnalyticsData[] => {
   if (!Array.isArray(data)) {
     return false
   }
-  
+
   for (const item of data) {
     if (!item.month || typeof item.month !== 'string') {
       return false
@@ -406,7 +409,7 @@ const validateAnalyticsData = (data: any): data is MonthlyAnalyticsData[] => {
       return false
     }
   }
-  
+
   return true
 }
 
@@ -417,22 +420,22 @@ const loadAnalyticsData = async (): Promise<void> => {
 
     // Make IPC call to backend
     const response = await ipcRenderer.invoke('getMonthlyAnalytics', currentYear.value)
-    
+
     if (!response) {
       throw new Error('No data received from backend')
     }
-    
+
     if (!validateAnalyticsData(response)) {
       throw new Error('Invalid data format received from backend')
     }
-    
+
     analyticsData.value = response
     // Update happens in the watcher because the canvas might not be ready yet.
 
   } catch (err: any) {
     handleError(
-      `Failed to load analytics data: ${err.message || 'Unknown error'}`,
-      err
+        `Failed to load analytics data: ${err.message || 'Unknown error'}`,
+        err
     )
   } finally {
     loading.value = false
@@ -444,7 +447,7 @@ const renderChart = (): void => {
     if (!chartCanvas.value) {
       throw new Error('Chart canvas not available')
     }
-    
+
     // Destroy existing chart instance if it exists
     if (chartInstance) {
       chartInstance.destroy()
@@ -453,10 +456,10 @@ const renderChart = (): void => {
 
     const monthLabels = analyticsData.value.map(item => item.month)
     const hoursData = analyticsData.value.map(item => Math.round(item.hours * 100) / 100)
-    
+
     // Dynamic configuration based on chart type
     const isLine = chartType.value === 'line'
-    
+
     const config: ChartConfiguration = {
       type: chartType.value as 'bar' | 'line',
       data: {
@@ -497,7 +500,7 @@ const renderChart = (): void => {
             cornerRadius: 8,
             displayColors: false,
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 return `${context.parsed.y}h worked`
               }
             }
@@ -511,7 +514,7 @@ const renderChart = (): void => {
             },
             ticks: {
               color: '#ffffff',
-              callback: function(value) {
+              callback: function (value) {
                 return value + 'h'
               }
             },
@@ -544,7 +547,7 @@ const renderChart = (): void => {
     chartInstance = new Chart(chartCanvas.value, config)
   } catch (error: any) {
     handleError(
-      `Failed to render chart: ${error.message || 'Unknown error'}`,
+        `Failed to render chart: ${error.message || 'Unknown error'}`,
         error
     )
   }
@@ -567,7 +570,7 @@ watch([analyticsData, chartCanvas], ([data, canvas]) => {
   if (data && data.length > 0 && canvas && !loading.value && !error.value) {
     renderChart();
   }
-}, { immediate: false })
+}, {immediate: false})
 
 loadAnalyticsData()
 </script>
@@ -575,7 +578,6 @@ loadAnalyticsData()
 <style scoped>
 .analytics-page {
   max-width: 1200px;
-  margin: 0 auto;
   background: transparent;
 }
 
@@ -590,11 +592,7 @@ loadAnalyticsData()
   overflow: hidden;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.summary-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  height: 100%;
 }
 
 .bg-gradient-primary {
@@ -673,16 +671,16 @@ loadAnalyticsData()
   .analytics-page {
     padding: 8px;
   }
-  
+
   .chart-wrapper {
     height: 300px;
     padding: 8px;
   }
-  
+
   .insights-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .summary-card .q-card-section {
     padding: 12px;
   }
