@@ -24,7 +24,7 @@
     <!-- Error State -->
     <div v-else-if="error" class="text-center q-pa-xl">
       <q-icon name="error" size="50px" color="negative"/>
-      <div class="q-mt-md text-negative">
+      <div class="q-mt-md">
         <div class="text-h6">Error Loading Analytics</div>
         <div class="q-mt-sm">{{ error }}</div>
         <q-btn
@@ -183,7 +183,6 @@ import {
   ChartConfiguration
 } from 'chart.js'
 
-// Register Chart.js components
 Chart.register(
     CategoryScale,
     LinearScale,
@@ -239,13 +238,11 @@ const yearOptions = computed(() => {
   return years
 })
 
-// Chart type options
 const chartTypeOptions = [
   {label: 'Bar', value: 'bar'},
   {label: 'Line', value: 'line'}
 ]
 
-// Summary metrics computed properties
 const totalHours = computed(() => {
   if (!analyticsData.value.length) return '0h'
   const total = analyticsData.value.reduce((sum, item) => sum + item.hours, 0)
@@ -284,7 +281,6 @@ const currentMonthHours = computed(() => {
   return `${Math.round(currentData?.hours || 0)}h`
 })
 
-// Trend calculations
 const trend = computed(() => {
   if (!analyticsData.value.length) return {direction: 'neutral', percentage: 0}
 
@@ -328,7 +324,6 @@ const trendText = computed(() => {
   return `${trend.value.percentage}% ${direction}`
 })
 
-// AI-powered insights
 const insights = computed((): Insight[] => {
   if (!analyticsData.value.length) return []
 
@@ -418,7 +413,6 @@ const loadAnalyticsData = async (): Promise<void> => {
     loading.value = true
     error.value = null
 
-    // Make IPC call to backend
     const response = await ipcRenderer.invoke('getMonthlyAnalytics', currentYear.value)
 
     if (!response) {
@@ -457,9 +451,7 @@ const renderChart = (): void => {
     const monthLabels = analyticsData.value.map(item => item.month)
     const hoursData = analyticsData.value.map(item => Math.round(item.hours * 100) / 100)
 
-    // Dynamic configuration based on chart type
     const isLine = chartType.value === 'line'
-
     const config: ChartConfiguration = {
       type: chartType.value as 'bar' | 'line',
       data: {
@@ -553,13 +545,11 @@ const renderChart = (): void => {
   }
 }
 
-// Year change handler
 const onYearChange = (newYear: number): void => {
   currentYear.value = newYear
   loadAnalyticsData()
 }
 
-// Chart type update handler
 const updateChart = (): void => {
   if (analyticsData.value.length > 0 && chartCanvas.value) {
     renderChart()
@@ -581,12 +571,10 @@ loadAnalyticsData()
   background: transparent;
 }
 
-/* Year Selector */
 .year-selector {
   min-width: 120px;
 }
 
-/* Summary Cards */
 .summary-card {
   border-radius: 12px;
   overflow: hidden;
@@ -611,7 +599,6 @@ loadAnalyticsData()
   background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
 }
 
-/* Chart Card */
 .chart-card {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -638,7 +625,6 @@ loadAnalyticsData()
   max-height: 100%;
 }
 
-/* Insights Card */
 .insights-card {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -666,7 +652,6 @@ loadAnalyticsData()
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .analytics-page {
     padding: 8px;
@@ -681,12 +666,8 @@ loadAnalyticsData()
     grid-template-columns: 1fr;
   }
 
-  .summary-card .q-card-section {
-    padding: 12px;
-  }
 }
 
-/* Loading and Error States */
 .text-center {
   display: flex;
   flex-direction: column;
@@ -694,7 +675,6 @@ loadAnalyticsData()
   justify-content: center;
 }
 
-/* Opacity utilities */
 .opacity-60 {
   opacity: 0.6;
 }
