@@ -4,6 +4,7 @@
   appId: "com.wpu.easepm",
   asar: true,
   productName: "EasePM",
+  publish: null,
   directories: {
     output: "release/${version}",
   },
