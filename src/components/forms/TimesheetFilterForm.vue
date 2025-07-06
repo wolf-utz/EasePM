@@ -54,7 +54,7 @@ function onSubmit(): void {
     @submit="onSubmit"
     class="time-sheet-filter row q-col-gutter-md items-center q-mb-xl"
   >
-    <div class="col col-sm-6 col-md-2">
+    <div class="col col-sm-6 col-md-4 col-lg-2">
       <DateField
         :validation="v$"
         label="Start date"
@@ -64,7 +64,7 @@ function onSubmit(): void {
         @change="(value: string) => formData.startDate = dateStringToUnixTimestamp(value, 'YYYY/MM/DD')"
       />
     </div>
-    <div class="col col-sm-6 col-md-2">
+    <div class="col col-sm-6 col-md-4 col-lg-2">
       <DateField
         :validation="v$"
         label="End date"
@@ -74,7 +74,7 @@ function onSubmit(): void {
         @change="(value: string) => formData.endDate = dateStringToUnixTimestamp(value, 'YYYY/MM/DD')"
       />
     </div>
-    <div class="col col-sm-6 col-md-3">
+    <div class="col col-sm-6 col-md-4 col-lg-3">
       <CustomerSingleSelectField
         :validation="v$"
         label="Customer"
@@ -89,7 +89,7 @@ function onSubmit(): void {
         "
       />
     </div>
-    <div class="col col-sm-6 col-md-4">
+    <div class="col col-sm-6 col-md-4 col-lg-3">
       <ProjectSingleSelectField
         :validation="v$"
         label="Project"
@@ -100,7 +100,7 @@ function onSubmit(): void {
         :customerId="formData._customerId"
       />
     </div>
-    <div class="col col-sm-6 col-md-1">
+    <div class="col col-sm-6 col-md-6 col-lg-2">
       <q-btn
         icon="save"
         type="submit"
