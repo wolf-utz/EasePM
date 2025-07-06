@@ -19,7 +19,7 @@ const $q = useQuasar();
 const rules = {
   _id: {},
   customerNumber: {},
-  company: { required },
+  company: { },
   firstName: { required },
   lastName: { required },
   email: { required, email },
