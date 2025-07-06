@@ -6,8 +6,8 @@ import { TimesheetFilter } from "../../types/forms/timesheet-filter-types";
 import { computed, reactive } from "vue";
 
 const filter = reactive({
-  startDate: moment().subtract(1, "month").startOf("month").unix(),
-  endDate: moment().subtract(1, "month").endOf("month").unix(),
+  startDate: moment().startOf("month").add(1, "day").unix(),
+  endDate: moment().endOf("month").unix(),
   _customerId: "",
   _projectId: "",
 }) as TimesheetFilter;
