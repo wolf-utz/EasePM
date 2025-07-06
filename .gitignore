@@ -28,3 +28,22 @@ release
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+
+# Added by Task Master AI
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+.env
+.vscode
+# OS specific
+.taskmaster/
+.roo
+.env.example
+.roomodes
+.cursor/
+.trae/
+.vscode/
+.windsurf/
+.clinerules
+.claude

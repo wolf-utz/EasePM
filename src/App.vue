@@ -65,7 +65,7 @@ onMounted(async () => {
               <q-item-section> Offers </q-item-section>
             </q-item>
 
-            <q-item to="/analytics" exact :disable="true">
+            <q-item to="/analytics" exact>
               <q-item-section avatar>
                 <q-icon name="analytics" />
               </q-item-section>

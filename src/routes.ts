@@ -17,8 +17,8 @@ import ListProjects from "./pages/projects/ListProjects.vue";
 import EditProject from "./pages/projects/EditProject.vue";
 import NewProject from "./pages/projects/NewProject.vue";
 import KanbanBoard from "./pages/projects/KanbanBoard.vue";
-import ListReports from "./pages/reports/ListReports.vue";
 import TimeSheet from "./pages/reports/TimeSheet.vue";
+import Analytics from "./pages/analytics/Analytics.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -140,7 +140,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/analytics",
     name: "analytics",
-    component: Dashboard,
+    component: Analytics,
     meta: {
       title: "Analytics",
     },
