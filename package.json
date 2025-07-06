@@ -1,6 +1,6 @@
 {
   "name": "ease-pm",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "dist-electron/main/index.js",
   "description": "This is a micro CRM, project and invoice management software for very small companies.",
   "author": "Wolf-Peter Utz <wolf@utz.it>",
