@@ -3,11 +3,14 @@ import { app, BrowserWindow, shell } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import os from "node:os";
-import { AppDataSource } from "../data-source"
+import { initializeDatabase, closeDatabase } from "../data-source"
 import {registerIpcHandlers} from  "./ipc-handlers";
 
-// Initialize the database.
-AppDataSource.initialize().then(() => console.log("Database initialized!"));
+// Initialize the database with proper error handling
+initializeDatabase().catch((error) => {
+    console.error("Critical error: Failed to initialize database. Application will exit.", error);
+    app.quit();
+});
 
 // Register IPC handlers.
 registerIpcHandlers();
@@ -69,9 +72,12 @@ async function createWindow() {
 
 app.whenReady().then(createWindow);
 
-app.on("window-all-closed", () => {
+app.on("window-all-closed", async () => {
   win = null;
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform !== "darwin") {
+    await closeDatabase();
+    app.quit();
+  }
 });
 
 app.on("second-instance", () => {
