@@ -18,7 +18,7 @@ export class WorkLog {
     @Column({type: "int"})
     trackedTime: number
 
-    @Column({type: "int"})
+    @Column({type: "boolean"})
     billable: boolean
 
     @ManyToOne(() => Task, (task) => task.workLogs)

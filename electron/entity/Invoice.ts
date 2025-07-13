@@ -19,13 +19,13 @@ export class Invoice {
     @Column({type: "int"})
     deliveryDate: number
 
-    @Column({type: "int"})
+    @Column({type: "boolean"})
     draft: boolean
 
-    @Column({type: "int"})
+    @Column({type: "boolean"})
     canceled: boolean
 
-    @Column({type: "int"})
+    @Column({type: "boolean"})
     billed: boolean
 
     @OneToMany(() => InvoiceLineItem, (lineItem) => lineItem.invoice)
