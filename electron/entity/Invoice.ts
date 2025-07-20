@@ -1,11 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm"
 import {InvoiceLineItem} from "./InvoiceLineItem";
 import {Customer} from "./Customer";
 
-@Entity()
+@Entity("invoice")
 export class Invoice {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "varchar"})
     invoiceNumber: string
@@ -31,6 +31,10 @@ export class Invoice {
     @OneToMany(() => InvoiceLineItem, (lineItem) => lineItem.invoice)
     lineItems: InvoiceLineItem[]
 
+    @Column({type: "varchar"})
+    _customerId: string
+
     @ManyToOne(() => Customer, (customer) => customer.invoices)
+    @JoinColumn({ name: "_customerId" })
     customer: Customer
 }

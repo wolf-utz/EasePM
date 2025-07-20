@@ -15,10 +15,10 @@ export class CustomerService {
     }
   }
 
-  async findById(id: number): Promise<Customer | null> {
+  async findById(id: string): Promise<Customer | null> {
     try {
       return await this.customerRepo.findOne({
-        where: { id },
+        where: { _id: id },
         relations: ['projects', 'invoices']
       });
     } catch (error) {
@@ -58,7 +58,7 @@ export class CustomerService {
     }
   }
 
-  async update(id: number, updateData: Partial<Customer>): Promise<Customer> {
+  async update(id: string, updateData: Partial<Customer>): Promise<Customer> {
     try {
       const existingCustomer = await this.findById(id);
       if (!existingCustomer) {
@@ -72,7 +72,10 @@ export class CustomerService {
         }
       }
 
-      await this.customerRepo.update(id, updateData);
+      // Filter out relation fields that shouldn't be updated directly
+      const { projects, invoices, ...dataToUpdate } = updateData;
+
+      await this.customerRepo.update({ _id: id }, dataToUpdate);
       const updatedCustomer = await this.findById(id);
       
       if (!updatedCustomer) {
@@ -85,14 +88,14 @@ export class CustomerService {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       const existingCustomer = await this.findById(id);
       if (!existingCustomer) {
         throw new Error(`Customer with ID ${id} not found`);
       }
 
-      await this.customerRepo.delete(id);
+      await this.customerRepo.delete({ _id: id });
     } catch (error) {
       throw new Error(`Failed to delete customer: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

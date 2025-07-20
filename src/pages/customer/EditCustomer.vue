@@ -28,7 +28,7 @@ async function onSubmit(updatedCustomer: Customer): Promise<void> {
     position: "top",
     message: "Your data has been updated successfully!",
   });
-  await router.push({ name: "customers" });
+  await router.push({ name: "customer" });
 }
 
 onMounted(async () => {

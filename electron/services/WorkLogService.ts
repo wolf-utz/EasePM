@@ -20,10 +20,10 @@ export class WorkLogService {
     }
   }
 
-  async findById(id: number): Promise<WorkLog | null> {
+  async findById(id: string): Promise<WorkLog | null> {
     try {
       return await this.workLogRepo.findOne({
-        where: { id },
+        where: { _id: id },
         relations: ['task', 'task.project', 'task.project.customer']
       });
     } catch (error) {
@@ -31,10 +31,10 @@ export class WorkLogService {
     }
   }
 
-  async findByTaskId(taskId: number): Promise<WorkLog[]> {
+  async findByTaskId(taskId: string): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
-        where: { task: { id: taskId } },
+        where: { _taskId: taskId },
         relations: ['task', 'task.project', 'task.project.customer'],
         order: { displayDateTime: 'DESC' }
       });
@@ -43,10 +43,10 @@ export class WorkLogService {
     }
   }
 
-  async findByProjectId(projectId: number): Promise<WorkLog[]> {
+  async findByProjectId(projectId: string): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
-        where: { task: { project: { id: projectId } } },
+        where: { task: { _projectId: projectId } },
         relations: ['task', 'task.project', 'task.project.customer'],
         order: { displayDateTime: 'DESC' }
       });
@@ -84,8 +84,8 @@ export class WorkLogService {
 
   async create(workLogData: Partial<WorkLog>): Promise<WorkLog> {
     try {
-      if (!workLogData.task?.id) {
-        throw new Error('Task is required');
+      if (!workLogData._taskId) {
+        throw new Error('Task ID is required');
       }
       if (!workLogData.message) {
         throw new Error('Work log message is required');
@@ -95,14 +95,15 @@ export class WorkLogService {
       }
 
       const task = await this.taskRepo.findOne({
-        where: { id: workLogData.task.id }
+        where: { _id: workLogData._taskId }
       });
       if (!task) {
-        throw new Error(`Task with ID ${workLogData.task.id} not found`);
+        throw new Error(`Task with ID ${workLogData._taskId} not found`);
       }
 
       const workLog = this.workLogRepo.create({
         ...workLogData,
+        _taskId: workLogData._taskId,
         task,
         creationDateTime: workLogData.creationDateTime || Math.floor(Date.now() / 1000),
         displayDateTime: workLogData.displayDateTime || workLogData.creationDateTime || Math.floor(Date.now() / 1000),
@@ -111,7 +112,7 @@ export class WorkLogService {
 
       const savedWorkLog = await this.workLogRepo.save(workLog);
 
-      await this.taskRepo.update(task.id, {
+      await this.taskRepo.update({ _id: task._id }, {
         updatedDateTime: Math.floor(Date.now() / 1000)
       });
 
@@ -121,7 +122,7 @@ export class WorkLogService {
     }
   }
 
-  async update(id: number, updateData: Partial<WorkLog>): Promise<WorkLog> {
+  async update(id: string, updateData: Partial<WorkLog>): Promise<WorkLog> {
     try {
       const existingWorkLog = await this.findById(id);
       if (!existingWorkLog) {
@@ -132,10 +133,13 @@ export class WorkLogService {
         throw new Error('Tracked time must be greater than 0');
       }
 
-      await this.workLogRepo.update(id, updateData);
+      // Filter out relation fields that shouldn't be updated directly
+      const { task, ...dataToUpdate } = updateData;
+
+      await this.workLogRepo.update({ _id: id }, dataToUpdate);
 
       if (existingWorkLog.task) {
-        await this.taskRepo.update(existingWorkLog.task.id, {
+        await this.taskRepo.update({ _id: existingWorkLog.task._id }, {
           updatedDateTime: Math.floor(Date.now() / 1000)
         });
       }
@@ -152,17 +156,17 @@ export class WorkLogService {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     try {
       const existingWorkLog = await this.findById(id);
       if (!existingWorkLog) {
         throw new Error(`Work log with ID ${id} not found`);
       }
 
-      await this.workLogRepo.delete(id);
+      await this.workLogRepo.delete({ _id: id });
 
       if (existingWorkLog.task) {
-        await this.taskRepo.update(existingWorkLog.task.id, {
+        await this.taskRepo.update({ _id: existingWorkLog.task._id }, {
           updatedDateTime: Math.floor(Date.now() / 1000)
         });
       }
@@ -171,7 +175,7 @@ export class WorkLogService {
     }
   }
 
-  async getTotalTimeByTask(taskId: number): Promise<{
+  async getTotalTimeByTask(taskId: string): Promise<{
     totalTime: number;
     billableTime: number;
     nonBillableTime: number;
@@ -197,7 +201,7 @@ export class WorkLogService {
     }
   }
 
-  async getTotalTimeByProject(projectId: number): Promise<{
+  async getTotalTimeByProject(projectId: string): Promise<{
     totalTime: number;
     billableTime: number;
     nonBillableTime: number;
@@ -349,7 +353,7 @@ export class WorkLogService {
     }
   }
 
-  async toggleBillable(id: number): Promise<WorkLog> {
+  async toggleBillable(id: string): Promise<WorkLog> {
     try {
       const workLog = await this.findById(id);
       if (!workLog) {

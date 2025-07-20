@@ -22,10 +22,10 @@ export class ProjectService {
     }
   }
 
-  async findById(id: number): Promise<Project | null> {
+  async findById(id: string): Promise<Project | null> {
     try {
       return await this.projectRepo.findOne({
-        where: { id },
+        where: { _id: id },
         relations: ['customer', 'tasks', 'tasks.workLogs']
       });
     } catch (error) {
@@ -44,10 +44,10 @@ export class ProjectService {
     }
   }
 
-  async findByCustomerId(customerId: number): Promise<Project[]> {
+  async findByCustomerId(customerId: string): Promise<Project[]> {
     try {
       return await this.projectRepo.find({
-        where: { customer: { id: customerId } },
+        where: { _customerId: customerId },
         relations: ['customer', 'tasks', 'tasks.workLogs'],
         order: { creationDateTime: 'DESC' }
       });
@@ -76,8 +76,8 @@ export class ProjectService {
       if (!projectData.title) {
         throw new Error('Project title is required');
       }
-      if (!projectData.customer?.id) {
-        throw new Error('Customer is required');
+      if (!projectData._customerId) {
+        throw new Error('Customer ID is required');
       }
 
       const existingProject = await this.findByProjectNumber(projectData.projectNumber);
@@ -86,14 +86,15 @@ export class ProjectService {
       }
 
       const customer = await this.customerRepo.findOne({
-        where: { id: projectData.customer.id }
+        where: { _id: projectData._customerId }
       });
       if (!customer) {
-        throw new Error(`Customer with ID ${projectData.customer.id} not found`);
+        throw new Error(`Customer with ID ${projectData._customerId} not found`);
       }
 
       const project = this.projectRepo.create({
         ...projectData,
+        _customerId: projectData._customerId,
         customer,
         creationDateTime: projectData.creationDateTime || Math.floor(Date.now() / 1000),
         taskAutoIncrement: projectData.taskAutoIncrement || 1,
@@ -106,7 +107,7 @@ export class ProjectService {
     }
   }
 
-  async update(id: number, updateData: Partial<Project>): Promise<Project> {
+  async update(id: string, updateData: Partial<Project>): Promise<Project> {
     try {
       const existingProject = await this.findById(id);
       if (!existingProject) {
@@ -120,7 +121,10 @@ export class ProjectService {
         }
       }
 
-      await this.projectRepo.update(id, updateData);
+      // Filter out relation fields that shouldn't be updated directly
+      const { customer, tasks, ...dataToUpdate } = updateData;
+
+      await this.projectRepo.update({ _id: id }, dataToUpdate);
       const updatedProject = await this.findById(id);
       
       if (!updatedProject) {
@@ -133,7 +137,7 @@ export class ProjectService {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -145,18 +149,18 @@ export class ProjectService {
       }
 
       const tasks = await this.taskRepo.find({
-        where: { project: { id } },
+        where: { _projectId: id },
         relations: ['workLogs']
       });
 
       for (const task of tasks) {
         if (task.workLogs && task.workLogs.length > 0) {
-          await queryRunner.manager.delete('WorkLog', { task: { id: task.id } });
+          await queryRunner.manager.delete('WorkLog', { _taskId: task._id });
         }
       }
 
-      await queryRunner.manager.delete(Task, { project: { id } });
-      await queryRunner.manager.delete(Project, id);
+      await queryRunner.manager.delete('Task', { _projectId: id });
+      await queryRunner.manager.delete('Project', { _id: id });
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -167,18 +171,31 @@ export class ProjectService {
     }
   }
 
-  async addTask(projectId: number, taskData: Partial<Task>): Promise<Task> {
+  async addTask(projectId: string, taskData: Partial<Task>): Promise<Task> {
     try {
       const project = await this.findById(projectId);
       if (!project) {
         throw new Error(`Project with ID ${projectId} not found`);
       }
 
-      const taskNumber = `${project.projectNumber}-${project.taskAutoIncrement}`;
+      // Auto-generate unique task number
+      let counter = project.taskAutoIncrement;
+      let taskNumber: string;
+      do {
+        taskNumber = `${project.projectNumber}-${counter}`;
+        const existingTask = await this.taskRepo.findOne({
+          where: { taskNumber }
+        });
+        if (!existingTask) {
+          break;
+        }
+        counter++;
+      } while (true);
       
       const task = this.taskRepo.create({
         ...taskData,
         taskNumber,
+        _projectId: projectId,
         project,
         creationDateTime: taskData.creationDateTime || Math.floor(Date.now() / 1000),
         updatedDateTime: Math.floor(Date.now() / 1000),
@@ -187,8 +204,9 @@ export class ProjectService {
 
       const savedTask = await this.taskRepo.save(task);
 
-      await this.projectRepo.update(projectId, {
-        taskAutoIncrement: project.taskAutoIncrement + 1
+      // Update the project's taskAutoIncrement to the next available number
+      await this.projectRepo.update({ _id: projectId }, {
+        taskAutoIncrement: counter + 1
       });
 
       return savedTask;
@@ -197,10 +215,10 @@ export class ProjectService {
     }
   }
 
-  async getProjectTasks(projectId: number): Promise<Task[]> {
+  async getProjectTasks(projectId: string): Promise<Task[]> {
     try {
       return await this.taskRepo.find({
-        where: { project: { id: projectId } },
+        where: { _projectId: projectId },
         relations: ['workLogs'],
         order: { creationDateTime: 'ASC' }
       });
@@ -209,7 +227,7 @@ export class ProjectService {
     }
   }
 
-  async getProjectStats(id: number): Promise<{
+  async getProjectStats(id: string): Promise<{
     totalTasks: number;
     completedTasks: number;
     inProgressTasks: number;
@@ -256,7 +274,7 @@ export class ProjectService {
     }
   }
 
-  async updateProjectState(id: number, state: string): Promise<Project> {
+  async updateProjectState(id: string, state: string): Promise<Project> {
     try {
       return await this.update(id, { state });
     } catch (error) {
@@ -281,7 +299,7 @@ export class ProjectService {
     }
   }
 
-  async getProjectProgress(id: number): Promise<{
+  async getProjectProgress(id: string): Promise<{
     completionPercentage: number;
     tasksProgress: {
       todo: number;
@@ -306,6 +324,57 @@ export class ProjectService {
       };
     } catch (error) {
       throw new Error(`Failed to get project progress: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async syncTaskAutoIncrement(projectId: string): Promise<void> {
+    try {
+      const project = await this.findById(projectId);
+      if (!project) {
+        throw new Error(`Project with ID ${projectId} not found`);
+      }
+
+      // Find the highest task number for this project
+      const tasks = await this.taskRepo.find({
+        where: { _projectId: projectId }
+      });
+
+      let maxTaskNumber = 0;
+      const projectPrefix = `${project.projectNumber}-`;
+      
+      tasks.forEach(task => {
+        if (task.taskNumber && task.taskNumber.startsWith(projectPrefix)) {
+          const numberPart = task.taskNumber.substring(projectPrefix.length);
+          const taskNum = parseInt(numberPart, 10);
+          if (!isNaN(taskNum) && taskNum > maxTaskNumber) {
+            maxTaskNumber = taskNum;
+          }
+        }
+      });
+
+      // Set taskAutoIncrement to one more than the highest existing task number
+      await this.projectRepo.update({ _id: projectId }, {
+        taskAutoIncrement: maxTaskNumber + 1
+      });
+
+      console.log(`Synced taskAutoIncrement for project ${project.projectNumber} to ${maxTaskNumber + 1}`);
+    } catch (error) {
+      throw new Error(`Failed to sync task auto increment: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async syncAllTaskAutoIncrements(): Promise<void> {
+    try {
+      const projects = await this.findAll();
+      console.log(`Syncing task auto increments for ${projects.length} projects...`);
+      
+      for (const project of projects) {
+        await this.syncTaskAutoIncrement(project._id);
+      }
+      
+      console.log('Finished syncing all task auto increments');
+    } catch (error) {
+      throw new Error(`Failed to sync all task auto increments: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

@@ -7,13 +7,13 @@ import { initializeDatabase, closeDatabase } from "../data-source"
 import {registerIpcHandlers} from  "./ipc-handlers";
 
 // Initialize the database with proper error handling
-initializeDatabase().catch((error) => {
+initializeDatabase().then(() => {
+    console.log("Database initialized successfully");
+    registerIpcHandlers();
+}).catch((error) => {
     console.error("Critical error: Failed to initialize database. Application will exit.", error);
     app.quit();
 });
-
-// Register IPC handlers.
-registerIpcHandlers();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "../..");

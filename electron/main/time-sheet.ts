@@ -1,11 +1,15 @@
-import { Customer, Project, Task, TimesheetFilter, WorkLog } from "./types";
-import Store from "./store.js";
+import { TimesheetFilter } from "./types";
 import { convertUnixTimestampToTimeInput } from "./util/time-string-to-unix";
 import * as XLSX from "xlsx";
 import fs from "fs";
 import path from "node:path";
 import { app } from "electron";
 import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util";
+import { createServiceContainer, ServiceContainer } from "../services/Container";
+import { Customer } from "../entity/Customer";
+import { Project } from "../entity/Project";
+import { Task } from "../entity/Task";
+import { WorkLog } from "../entity/WorkLog";
 
 interface ReportDataRow {
   project: Project;
@@ -13,10 +17,11 @@ interface ReportDataRow {
   workLog: WorkLog;
 }
 
-export function createTimeSheetReportCsvString(
+export async function createTimeSheetReportCsvString(
   filter: TimesheetFilter
-): string {
-  const customer = fetchCustomerByFilter(filter);
+): Promise<string> {
+  const serviceContainer = createServiceContainer();
+  const customer = await fetchCustomerByFilter(filter, serviceContainer);
   const startDate = formatUnixTimestampToGermanDate(filter.startDate).replace(
     ".",
     "-"
@@ -25,7 +30,7 @@ export function createTimeSheetReportCsvString(
     ".",
     "-"
   );
-  const projects = fetchProjectsByFilter(filter);
+  const projects = await fetchProjectsByFilter(filter, serviceContainer);
   const data = collectReportData(filter.startDate, filter.endDate, projects);
   const buffer = createReportBuffer(data);
   const exportDirectory = getExportDirectory();
@@ -43,23 +48,16 @@ export function createTimeSheetReportCsvString(
   return reportFilePath;
 }
 
-export function createTimeSheetReportData(
+export async function createTimeSheetReportData(
   filter: TimesheetFilter
-): ReportDataRow[] {
-  const projects = fetchProjectsByFilter(filter);
+): Promise<ReportDataRow[]> {
+  const serviceContainer = createServiceContainer();
+  const projects = await fetchProjectsByFilter(filter, serviceContainer);
   return collectReportData(filter.startDate, filter.endDate, projects);
 }
 
-function fetchCustomerByFilter(filter: TimesheetFilter): Customer {
-  const store = new Store({
-    configName: "customer-data",
-    defaults: { customerData: [] },
-  });
-
-  const customer: Customer | null = store.getSingle(
-    "customerData",
-    filter._customerId
-  );
+async function fetchCustomerByFilter(filter: TimesheetFilter, serviceContainer: ServiceContainer): Promise<Customer> {
+  const customer = await serviceContainer.customerService.findById(filter._customerId);
 
   if (!customer) {
     throw new Error("Customer not found");
@@ -68,19 +66,13 @@ function fetchCustomerByFilter(filter: TimesheetFilter): Customer {
   return customer;
 }
 
-function fetchProjectsByFilter(filter: TimesheetFilter): Project[] {
-  const store = new Store({
-    configName: "project-data",
-    defaults: { projectData: [] },
-  });
-  const projects = store.get("projectData");
-
+async function fetchProjectsByFilter(filter: TimesheetFilter, serviceContainer: ServiceContainer): Promise<Project[]> {
   if (filter._projectId) {
-    const project: Project = projects.find((p) => p._id === filter._projectId);
-    return [project];
+    const project = await serviceContainer.projectService.findById(filter._projectId);
+    return project ? [project] : [];
   }
 
-  return projects.filter((p) => p._customerId === filter._customerId);
+  return await serviceContainer.projectService.findByCustomerId(filter._customerId);
 }
 
 function collectReportData(
@@ -94,7 +86,13 @@ function collectReportData(
 
   const rows: ReportDataRow[] = [];
   for (const project of projects) {
+    if (!project.tasks || !Array.isArray(project.tasks)) {
+      continue;
+    }
     for (const task of project.tasks) {
+      if (!task.workLogs || !Array.isArray(task.workLogs)) {
+        continue;
+      }
       for (const workLog of task.workLogs) {
         if (!workLog.billable) {
           continue;

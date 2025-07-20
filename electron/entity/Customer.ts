@@ -3,10 +3,10 @@ import {InvoiceLineItem} from "./InvoiceLineItem";
 import {Invoice} from "./Invoice";
 import {Project} from "./Project";
 
-@Entity()
+@Entity("customer")
 export class Customer {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "varchar"})
     customerNumber: string

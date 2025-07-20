@@ -1,10 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm"
 import {Task} from "./Task";
 
-@Entity()
+@Entity("work_log")
 export class WorkLog {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "int"})
     creationDateTime: number
@@ -21,6 +21,10 @@ export class WorkLog {
     @Column({type: "boolean"})
     billable: boolean
 
+    @Column({type: "varchar"})
+    _taskId: string
+
     @ManyToOne(() => Task, (task) => task.workLogs)
+    @JoinColumn({ name: "_taskId" })
     task: Task
 }

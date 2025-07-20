@@ -1,10 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm"
 import {Invoice} from "./Invoice";
 
-@Entity()
+@Entity("invoice_line_item")
 export class InvoiceLineItem {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "varchar"})
     title: string
@@ -24,6 +24,10 @@ export class InvoiceLineItem {
     @Column({type: "int"})
     unitTotal: number
 
+    @Column({type: "varchar"})
+    _invoiceId: string
+
     @ManyToOne(() => Invoice, (invoice) => invoice.lineItems)
+    @JoinColumn({ name: "_invoiceId" })
     invoice: Invoice
 }

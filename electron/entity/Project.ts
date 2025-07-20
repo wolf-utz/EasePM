@@ -1,11 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm"
 import {Task} from "./Task";
 import {Customer} from "./Customer";
 
-@Entity()
+@Entity("project")
 export class Project {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "varchar"})
     projectNumber: string
@@ -25,9 +25,13 @@ export class Project {
     @Column({type: "int"})
     taskAutoIncrement: number
 
+    @Column({type: "varchar"})
+    _customerId: string
+
     @OneToMany(() => Task, (task) => task.project)
     tasks: Task[]
 
-    @ManyToOne(() => Customer, (customer) => customer.invoices)
+    @ManyToOne(() => Customer, (customer) => customer.projects)
+    @JoinColumn({ name: "_customerId" })
     customer: Customer
 }

@@ -120,24 +120,18 @@ async function onRemoveInvoice(): Promise<void> {
 }
 
 async function onView(invoice: Invoice): Promise<void> {
-  let base64String: string | null = await ipcRenderer.invoke(
+  // @todo: The invoice should be created automatically on creation and updates of the invoice.
+  await ipcRenderer.invoke("writeInvoiceDocument", invoice._id);
+  const base64String = await ipcRenderer.invoke(
     "fileManagerGetInvoice",
     invoice.invoiceNumber + ".pdf",
     invoice.draft
   );
-
   if (null === base64String) {
-    await ipcRenderer.invoke("writeInvoiceDocument", invoice._id);
-    base64String = await ipcRenderer.invoke(
-      "fileManagerGetInvoice",
-      invoice.invoiceNumber + ".pdf",
-      invoice.draft
-    );
-    if (null === base64String) {
-      console.error("could not find pdf for invoice");
-      return;
-    }
+    console.error("could not find pdf for invoice");
+    return;
   }
+
   pdfBase64.value = base64String;
   viewPdf.value = true;
 }
@@ -182,11 +176,18 @@ async function onPublish(invoice: Invoice): Promise<void> {
 }
 
 async function onDownload(invoice: Invoice): Promise<void> {
-  const pdfBase64 = await ipcRenderer.invoke(
-    "fileManagerGetInvoice",
-    `${invoice.invoiceNumber}.pdf`
+  // @todo: The invoice should be created automatically on creation and updates of the invoice.
+  await ipcRenderer.invoke("writeInvoiceDocument", invoice._id);
+  const base64String = await ipcRenderer.invoke(
+      "fileManagerGetInvoice",
+      invoice.invoiceNumber + ".pdf"
   );
-  saveAs(base64ToBlob(pdfBase64), `${invoice.invoiceNumber}.pdf`);
+  if (null === base64String) {
+    console.error("could not find pdf for invoice");
+    return;
+  }
+
+  saveAs(base64ToBlob(base64String), `${invoice.invoiceNumber}.pdf`);
 }
 </script>
 

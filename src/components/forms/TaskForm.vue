@@ -104,6 +104,7 @@ function onDeleteWorkLog(workLog: WorkLog): void {
   const index = formData.workLogs.indexOf(workLog);
   if (index > -1) {
     formData.workLogs.splice(index, 1);
+    emit("silentSubmit", JSON.parse(JSON.stringify(props.formData)));
   }
 }
 </script>

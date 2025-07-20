@@ -1,11 +1,11 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm"
 import {WorkLog} from "./WorkLog";
 import {Project} from "./Project";
 
-@Entity()
+@Entity("task")
 export class Task {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    _id: string
 
     @Column({type: "varchar"})
     taskNumber: string
@@ -25,9 +25,13 @@ export class Task {
     @Column({type: "int"})
     updatedDateTime: number
 
+    @Column({type: "varchar"})
+    _projectId: string
+
     @OneToMany(() => WorkLog, (workLog) => workLog.task)
     workLogs: WorkLog[]
 
     @ManyToOne(() => Project, (project) => project.tasks)
+    @JoinColumn({ name: "_projectId" })
     project: Project
 }
