@@ -1,21 +1,22 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '../data-source';
-import { Invoice } from '../entity/Invoice';
-import { InvoiceLineItem } from '../entity/InvoiceLineItem';
-import { Customer } from '../entity/Customer';
+import {Repository} from 'typeorm';
+import {AppDataSource} from '../data-source';
+import {Invoice} from '../entity/Invoice';
+import {InvoiceLineItem} from '../entity/InvoiceLineItem';
+import {Customer} from '../entity/Customer';
 
 export class InvoiceService {
   constructor(
     private invoiceRepo: Repository<Invoice>,
     private lineItemRepo: Repository<InvoiceLineItem>,
     private customerRepo: Repository<Customer>
-  ) {}
+  ) {
+  }
 
   async findAll(): Promise<Invoice[]> {
     try {
       return await this.invoiceRepo.find({
         relations: ['customer', 'lineItems'],
-        order: { invoiceDate: 'DESC' }
+        order: {invoiceDate: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch invoices: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -25,7 +26,7 @@ export class InvoiceService {
   async findById(id: string): Promise<Invoice | null> {
     try {
       return await this.invoiceRepo.findOne({
-        where: { _id: id },
+        where: {_id: id},
         relations: ['customer', 'lineItems']
       });
     } catch (error) {
@@ -36,7 +37,7 @@ export class InvoiceService {
   async findByInvoiceNumber(invoiceNumber: string): Promise<Invoice | null> {
     try {
       return await this.invoiceRepo.findOne({
-        where: { invoiceNumber },
+        where: {invoiceNumber},
         relations: ['customer', 'lineItems']
       });
     } catch (error) {
@@ -47,9 +48,9 @@ export class InvoiceService {
   async findByCustomerId(customerId: string): Promise<Invoice[]> {
     try {
       return await this.invoiceRepo.find({
-        where: { _customerId: customerId },
+        where: {_customerId: customerId},
         relations: ['customer', 'lineItems'],
-        order: { invoiceDate: 'DESC' }
+        order: {invoiceDate: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch invoices for customer ${customerId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -75,7 +76,7 @@ export class InvoiceService {
       }
 
       const customer = await this.customerRepo.findOne({
-        where: { _id: invoiceData._customerId }
+        where: {_id: invoiceData._customerId}
       });
       if (!customer) {
         throw new Error(`Customer with ID ${invoiceData._customerId} not found`);
@@ -90,7 +91,7 @@ export class InvoiceService {
       const savedInvoice = await queryRunner.manager.save(invoice);
 
       if (lineItems.length > 0) {
-        const createdLineItems = lineItems.map(lineItemData => 
+        const createdLineItems = lineItems.map(lineItemData =>
           this.lineItemRepo.create({
             ...lineItemData,
             _invoiceId: savedInvoice._id,
@@ -137,19 +138,19 @@ export class InvoiceService {
       }
 
       // Filter out relation fields that shouldn't be updated directly
-      const { customer, lineItems, ...dataToUpdate } = updateData;
+      const {customer, lineItems, ...dataToUpdate} = updateData;
 
       // Update invoice data
-      await queryRunner.manager.update('Invoice', { _id: id }, dataToUpdate);
+      await queryRunner.manager.update('Invoice', {_id: id}, dataToUpdate);
 
       // Handle line items only if explicitly provided and valid
       if (lineItems !== undefined && Array.isArray(lineItems)) {
         // Remove existing line items
-        await queryRunner.manager.delete('InvoiceLineItem', { _invoiceId: id });
-        
+        await queryRunner.manager.delete('InvoiceLineItem', {_invoiceId: id});
+
         // Add new line items if any
         if (lineItems.length > 0) {
-          const newLineItems = lineItems.map(lineItemData => 
+          const newLineItems = lineItems.map(lineItemData =>
             this.lineItemRepo.create({
               ...lineItemData,
               _invoiceId: id
@@ -157,7 +158,7 @@ export class InvoiceService {
           );
           await queryRunner.manager.save(newLineItems);
         }
-        
+
         // Update total after line items change
         await queryRunner.commitTransaction();
         await this.updateInvoiceTotal(id);
@@ -191,8 +192,8 @@ export class InvoiceService {
         throw new Error(`Invoice with ID ${id} not found`);
       }
 
-      await queryRunner.manager.delete(InvoiceLineItem, { _invoiceId: id });
-      await queryRunner.manager.delete(Invoice, { _id: id });
+      await queryRunner.manager.delete(InvoiceLineItem, {_invoiceId: id});
+      await queryRunner.manager.delete(Invoice, {_id: id});
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -224,22 +225,22 @@ export class InvoiceService {
     }
   }
 
-  async updateLineItem(lineItemId: number, updateData: Partial<InvoiceLineItem>): Promise<InvoiceLineItem> {
+  async updateLineItem(lineItemId: string, updateData: Partial<InvoiceLineItem>): Promise<InvoiceLineItem> {
     try {
       const existingLineItem = await this.lineItemRepo.findOne({
-        where: { id: lineItemId },
+        where: {_id: lineItemId},
         relations: ['invoice']
       });
-      
+
       if (!existingLineItem) {
         throw new Error(`Line item with ID ${lineItemId} not found`);
       }
 
       await this.lineItemRepo.update(lineItemId, updateData);
-      await this.updateInvoiceTotal(existingLineItem.invoice.id);
+      await this.updateInvoiceTotal(existingLineItem.invoice._id);
 
       const updatedLineItem = await this.lineItemRepo.findOne({
-        where: { id: lineItemId },
+        where: {_id: lineItemId},
         relations: ['invoice']
       });
 
@@ -253,18 +254,18 @@ export class InvoiceService {
     }
   }
 
-  async removeLineItem(lineItemId: number): Promise<void> {
+  async removeLineItem(lineItemId: string): Promise<void> {
     try {
       const existingLineItem = await this.lineItemRepo.findOne({
-        where: { id: lineItemId },
+        where: {_id: lineItemId},
         relations: ['invoice']
       });
-      
+
       if (!existingLineItem) {
         throw new Error(`Line item with ID ${lineItemId} not found`);
       }
 
-      const invoiceId = existingLineItem.invoice.id;
+      const invoiceId = existingLineItem.invoice._id;
       await this.lineItemRepo.delete(lineItemId);
       await this.updateInvoiceTotal(invoiceId);
     } catch (error) {
@@ -275,12 +276,12 @@ export class InvoiceService {
   private async updateInvoiceTotal(invoiceId: string): Promise<void> {
     try {
       const lineItems = await this.lineItemRepo.find({
-        where: { _invoiceId: invoiceId }
+        where: {_invoiceId: invoiceId}
       });
 
       const total = lineItems.reduce((sum, item) => sum + (item.unitTotal || 0), 0);
 
-      await this.invoiceRepo.update({ _id: invoiceId }, { total });
+      await this.invoiceRepo.update({_id: invoiceId}, {total});
     } catch (error) {
       throw new Error(`Failed to update invoice total: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -289,26 +290,26 @@ export class InvoiceService {
   async getInvoicesByStatus(draft: boolean = false, canceled: boolean = false, billed: boolean = false): Promise<Invoice[]> {
     try {
       return await this.invoiceRepo.find({
-        where: { draft, canceled, billed },
+        where: {draft, canceled, billed},
         relations: ['customer', 'lineItems'],
-        order: { invoiceDate: 'DESC' }
+        order: {invoiceDate: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch invoices by status: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
-  async markAsBilled(id: number): Promise<Invoice> {
+  async markAsBilled(id: string): Promise<Invoice> {
     try {
-      return await this.update(id, { billed: true, draft: false });
+      return await this.update(id, {billed: true, draft: false});
     } catch (error) {
       throw new Error(`Failed to mark invoice as billed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
-  async markAsCanceled(id: number): Promise<Invoice> {
+  async markAsCanceled(id: string): Promise<Invoice> {
     try {
-      return await this.update(id, { canceled: true });
+      return await this.update(id, {canceled: true});
     } catch (error) {
       throw new Error(`Failed to mark invoice as canceled: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

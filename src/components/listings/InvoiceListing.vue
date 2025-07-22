@@ -1,19 +1,21 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { Invoice } from "../../types/invoice-types";
-import { formatCurrency } from "../../util/format-currency";
-import { convertUnixToGermanDate } from "../../util/timestamp";
+import {ref} from "vue";
+import {Invoice} from "../../types/invoice-types";
+import {formatCurrency} from "../../util/format-currency";
+import {convertUnixToGermanDate} from "../../util/timestamp";
 import PDFViewer from "../PDFViewer.vue";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
-import { saveAs } from "file-saver";
-import { base64ToBlob } from "../../util/base64-to-blob";
+import {useRouter} from "vue-router";
+import {useQuasar} from "quasar";
+import {saveAs} from "file-saver";
+import {base64ToBlob} from "../../util/base64-to-blob";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
+
 interface Props {
   invoices: Invoice[];
 }
+
 defineProps<Props>();
 const emit = defineEmits<{
   (e: "refreshListing"): void;
@@ -85,18 +87,21 @@ const openRemoveDialog = ref<boolean>(false);
 const invoiceToRemove = ref<Invoice | null>(null);
 
 async function onNew(): Promise<void> {
-  await router.push({ name: "invoices/new" });
+  await router.push({name: "invoices/new"});
 }
-async function onEdit({ _id }: Invoice): Promise<void> {
+
+async function onEdit({_id}: Invoice): Promise<void> {
   await router.push({
     name: "invoices/edit",
-    params: { id: _id },
+    params: {id: _id},
   });
 }
+
 function onOpenRemoveDialog(invoice: Invoice): void {
   invoiceToRemove.value = invoice;
   openRemoveDialog.value = true;
 }
+
 async function onRemoveInvoice(): Promise<void> {
   if (!invoiceToRemove) {
     return;
@@ -155,6 +160,7 @@ async function onMarkAsBilled(invoice: Invoice): Promise<void> {
     message: "Your invoice has been marked as billed successfully!",
   });
 }
+
 async function onPublish(invoice: Invoice): Promise<void> {
   const updatedInvoice: Invoice = JSON.parse(JSON.stringify(invoice));
   updatedInvoice.draft = false;
@@ -179,8 +185,8 @@ async function onDownload(invoice: Invoice): Promise<void> {
   // @todo: The invoice should be created automatically on creation and updates of the invoice.
   await ipcRenderer.invoke("writeInvoiceDocument", invoice._id);
   const base64String = await ipcRenderer.invoke(
-      "fileManagerGetInvoice",
-      invoice.invoiceNumber + ".pdf"
+    "fileManagerGetInvoice",
+    invoice.invoiceNumber + ".pdf"
   );
   if (null === base64String) {
     console.error("could not find pdf for invoice");
@@ -214,7 +220,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="Edit invoce"
           @click="onEdit(props.row)"
         >
-          <q-icon size="xs" color="grey" name="edit" />
+          <q-icon size="xs" color="grey" name="edit"/>
         </q-btn>
         <q-btn
           fab
@@ -226,7 +232,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="Delete invoice"
           @click="onOpenRemoveDialog(props.row)"
         >
-          <q-icon size="xs" color="grey" name="delete" />
+          <q-icon size="xs" color="grey" name="delete"/>
         </q-btn>
         <q-btn
           fab
@@ -237,9 +243,9 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="View invoice"
           @click="onView(props.row)"
         >
-          <q-icon size="xs" color="grey" name="visibility" />
+          <q-icon size="xs" color="grey" name="visibility"/>
         </q-btn>
-        <br />
+        <br/>
         <q-btn
           fab
           dense
@@ -250,7 +256,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="Download invoice"
           @click="onDownload(props.row)"
         >
-          <q-icon size="xs" color="grey" name="download" />
+          <q-icon size="xs" color="grey" name="download"/>
         </q-btn>
         <q-btn
           fab
@@ -262,7 +268,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="Mark invoice as billed"
           @click="onMarkAsBilled(props.row)"
         >
-          <q-icon size="xs" color="grey" name="paid" />
+          <q-icon size="xs" color="grey" name="paid"/>
         </q-btn>
         <q-btn
           fab
@@ -274,7 +280,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           title="Publish invoice"
           @click="onPublish(props.row)"
         >
-          <q-icon size="xs" color="grey" name="publish" />
+          <q-icon size="xs" color="grey" name="publish"/>
         </q-btn>
       </q-td>
     </template>
@@ -293,7 +299,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           color="grey"
           name="check_circle"
         />
-        <q-icon v-else size="xs" color="grey" name="cancel" />
+        <q-icon v-else size="xs" color="grey" name="cancel"/>
       </q-td>
     </template>
 
@@ -305,7 +311,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
           color="positive"
           name="check_circle"
         />
-        <q-icon v-else size="xs" color="negative" name="cancel" />
+        <q-icon v-else size="xs" color="negative" name="cancel"/>
       </q-td>
     </template>
 
@@ -333,7 +339,7 @@ async function onDownload(invoice: Invoice): Promise<void> {
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <PDFViewer :pdfBase64="pdfBase64" />
+        <PDFViewer :pdfBase64="pdfBase64"/>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -341,14 +347,14 @@ async function onDownload(invoice: Invoice): Promise<void> {
   <q-dialog v-model="openRemoveDialog" persistent>
     <q-card class="bg-dark">
       <q-card-section class="row items-center">
-        <q-avatar icon="delete" color="negative" text-color="white" />
+        <q-avatar icon="delete" color="negative" text-color="white"/>
         <span class="q-pt-none q-ml-sm">
           Do you really want to remove the invoice?
         </span>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat label="Cancel" color="primary" v-close-popup/>
         <q-btn
           flat
           label="Remove invoice"

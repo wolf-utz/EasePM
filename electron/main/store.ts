@@ -1,4 +1,4 @@
-import { app, ipcMain } from "electron";
+import {app, ipcMain} from "electron";
 import path from "path";
 import fs from "fs";
 
@@ -21,7 +21,7 @@ class Store {
     this._init(opts.defaults);
 
     // @todo remove this
-    console.log("=== store path:", this.path);
+    console.info("=== store path:", this.path);
 
     this.data = parseDataFile(this.path, opts.defaults);
   }
@@ -31,7 +31,7 @@ class Store {
 
     // Check if directory exists, if not create it
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.mkdirSync(dir, {recursive: true});
     }
 
     // Check if file exists, if not create it with default data

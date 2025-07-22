@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
-import { Validation } from "../../../types/forms/validation";
+import {ref, watch} from "vue";
+import {Validation} from "../../../types/forms/validation";
 import moment from "moment";
 
 interface Props {
@@ -48,7 +48,7 @@ watch(date, (newValue, _) => {
               :subtitle="date"
             >
               <div class="row items-center justify-end">
-                <q-btn v-close-popup label="Close" color="primary" flat />
+                <q-btn v-close-popup label="Close" color="primary" flat/>
               </div>
             </q-date>
           </q-popup-proxy>

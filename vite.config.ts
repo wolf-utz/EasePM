@@ -1,13 +1,13 @@
 import fs from "node:fs";
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import electron from "vite-plugin-electron/simple";
 import pkg from "./package.json";
-import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
+import {quasar, transformAssetUrls} from "@quasar/vite-plugin";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
-  fs.rmSync("dist-electron", { recursive: true, force: true });
+export default defineConfig(({command}) => {
+  fs.rmSync("dist-electron", {recursive: true, force: true});
 
   const isServe = command === "serve";
   const isBuild = command === "build";
@@ -16,7 +16,7 @@ export default defineConfig(({ command }) => {
   return {
     plugins: [
       vue({
-        template: { transformAssetUrls },
+        template: {transformAssetUrls},
       }),
       quasar({
         // sassVariables: "./src/quasar-variables.sass",
@@ -25,7 +25,7 @@ export default defineConfig(({ command }) => {
         main: {
           // Shortcut of `build.lib.entry`
           entry: "electron/main/index.ts",
-          onstart({ startup }) {
+          onstart({startup}) {
             if (process.env.VSCODE_DEBUG) {
               console.log(
                 /* For `.vscode/.debug.script.mjs` */ "[startup] Electron App"

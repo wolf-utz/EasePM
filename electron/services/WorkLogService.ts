@@ -1,19 +1,20 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '../data-source';
-import { WorkLog } from '../entity/WorkLog';
-import { Task } from '../entity/Task';
+import {Repository} from 'typeorm';
+import {AppDataSource} from '../data-source';
+import {WorkLog} from '../entity/WorkLog';
+import {Task} from '../entity/Task';
 
 export class WorkLogService {
   constructor(
     private workLogRepo: Repository<WorkLog>,
     private taskRepo: Repository<Task>
-  ) {}
+  ) {
+  }
 
   async findAll(): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
         relations: ['task', 'task.project', 'task.project.customer'],
-        order: { displayDateTime: 'DESC' }
+        order: {displayDateTime: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch work logs: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -23,7 +24,7 @@ export class WorkLogService {
   async findById(id: string): Promise<WorkLog | null> {
     try {
       return await this.workLogRepo.findOne({
-        where: { _id: id },
+        where: {_id: id},
         relations: ['task', 'task.project', 'task.project.customer']
       });
     } catch (error) {
@@ -34,9 +35,9 @@ export class WorkLogService {
   async findByTaskId(taskId: string): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
-        where: { _taskId: taskId },
+        where: {_taskId: taskId},
         relations: ['task', 'task.project', 'task.project.customer'],
-        order: { displayDateTime: 'DESC' }
+        order: {displayDateTime: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch work logs for task ${taskId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -46,9 +47,9 @@ export class WorkLogService {
   async findByProjectId(projectId: string): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
-        where: { task: { _projectId: projectId } },
+        where: {task: {_projectId: projectId}},
         relations: ['task', 'task.project', 'task.project.customer'],
-        order: { displayDateTime: 'DESC' }
+        order: {displayDateTime: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch work logs for project ${projectId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -59,7 +60,7 @@ export class WorkLogService {
     try {
       return await this.workLogRepo
         .createQueryBuilder('workLog')
-        .where('workLog.displayDateTime BETWEEN :startDate AND :endDate', { startDate, endDate })
+        .where('workLog.displayDateTime BETWEEN :startDate AND :endDate', {startDate, endDate})
         .leftJoinAndSelect('workLog.task', 'task')
         .leftJoinAndSelect('task.project', 'project')
         .leftJoinAndSelect('project.customer', 'customer')
@@ -73,9 +74,9 @@ export class WorkLogService {
   async findBillable(billable: boolean = true): Promise<WorkLog[]> {
     try {
       return await this.workLogRepo.find({
-        where: { billable },
+        where: {billable},
         relations: ['task', 'task.project', 'task.project.customer'],
-        order: { displayDateTime: 'DESC' }
+        order: {displayDateTime: 'DESC'}
       });
     } catch (error) {
       throw new Error(`Failed to fetch ${billable ? 'billable' : 'non-billable'} work logs: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -95,7 +96,7 @@ export class WorkLogService {
       }
 
       const task = await this.taskRepo.findOne({
-        where: { _id: workLogData._taskId }
+        where: {_id: workLogData._taskId}
       });
       if (!task) {
         throw new Error(`Task with ID ${workLogData._taskId} not found`);
@@ -112,7 +113,7 @@ export class WorkLogService {
 
       const savedWorkLog = await this.workLogRepo.save(workLog);
 
-      await this.taskRepo.update({ _id: task._id }, {
+      await this.taskRepo.update({_id: task._id}, {
         updatedDateTime: Math.floor(Date.now() / 1000)
       });
 
@@ -134,18 +135,18 @@ export class WorkLogService {
       }
 
       // Filter out relation fields that shouldn't be updated directly
-      const { task, ...dataToUpdate } = updateData;
+      const {task, ...dataToUpdate} = updateData;
 
-      await this.workLogRepo.update({ _id: id }, dataToUpdate);
+      await this.workLogRepo.update({_id: id}, dataToUpdate);
 
       if (existingWorkLog.task) {
-        await this.taskRepo.update({ _id: existingWorkLog.task._id }, {
+        await this.taskRepo.update({_id: existingWorkLog.task._id}, {
           updatedDateTime: Math.floor(Date.now() / 1000)
         });
       }
 
       const updatedWorkLog = await this.findById(id);
-      
+
       if (!updatedWorkLog) {
         throw new Error(`Failed to retrieve updated work log with ID ${id}`);
       }
@@ -163,10 +164,10 @@ export class WorkLogService {
         throw new Error(`Work log with ID ${id} not found`);
       }
 
-      await this.workLogRepo.delete({ _id: id });
+      await this.workLogRepo.delete({_id: id});
 
       if (existingWorkLog.task) {
-        await this.taskRepo.update({ _id: existingWorkLog.task._id }, {
+        await this.taskRepo.update({_id: existingWorkLog.task._id}, {
           updatedDateTime: Math.floor(Date.now() / 1000)
         });
       }
@@ -183,7 +184,7 @@ export class WorkLogService {
   }> {
     try {
       const workLogs = await this.findByTaskId(taskId);
-      
+
       const totalTime = workLogs.reduce((sum, log) => sum + (log.trackedTime || 0), 0);
       const billableTime = workLogs
         .filter(log => log.billable)
@@ -209,7 +210,7 @@ export class WorkLogService {
   }> {
     try {
       const workLogs = await this.findByProjectId(projectId);
-      
+
       const totalTime = workLogs.reduce((sum, log) => sum + (log.trackedTime || 0), 0);
       const billableTime = workLogs
         .filter(log => log.billable)
@@ -240,7 +241,7 @@ export class WorkLogService {
   }> {
     try {
       const workLogs = await this.findByDateRange(startDate, endDate);
-      
+
       const totalTime = workLogs.reduce((sum, log) => sum + (log.trackedTime || 0), 0);
       const billableTime = workLogs
         .filter(log => log.billable)
@@ -271,9 +272,9 @@ export class WorkLogService {
     workLogs.forEach(log => {
       const date = new Date(log.displayDateTime * 1000);
       const dateKey = date.toISOString().split('T')[0];
-      
+
       if (!dailyMap.has(dateKey)) {
-        dailyMap.set(dateKey, { totalTime: 0, billableTime: 0 });
+        dailyMap.set(dateKey, {totalTime: 0, billableTime: 0});
       }
 
       const dayData = dailyMap.get(dateKey)!;
@@ -360,7 +361,7 @@ export class WorkLogService {
         throw new Error(`Work log with ID ${id} not found`);
       }
 
-      return await this.update(id, { billable: !workLog.billable });
+      return await this.update(id, {billable: !workLog.billable});
     } catch (error) {
       throw new Error(`Failed to toggle billable status: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -370,7 +371,7 @@ export class WorkLogService {
     try {
       return await this.workLogRepo.find({
         relations: ['task', 'task.project', 'task.project.customer'],
-        order: { displayDateTime: 'DESC' },
+        order: {displayDateTime: 'DESC'},
         take: limit
       });
     } catch (error) {
@@ -382,7 +383,7 @@ export class WorkLogService {
     try {
       return await this.workLogRepo
         .createQueryBuilder('workLog')
-        .where('workLog.message LIKE :term', { term: `%${searchTerm}%` })
+        .where('workLog.message LIKE :term', {term: `%${searchTerm}%`})
         .leftJoinAndSelect('workLog.task', 'task')
         .leftJoinAndSelect('task.project', 'project')
         .leftJoinAndSelect('project.customer', 'customer')

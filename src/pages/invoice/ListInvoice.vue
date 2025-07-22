@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
+import {onMounted, reactive, ref} from "vue";
 import InvoiceListing from "../../components/listings/InvoiceListing.vue";
 import InvoiceSettingsForm from "../../components/forms/InvoiceSettingsForm.vue";
-import { InvoiceSettings } from "../../types/forms/invoice-settings-form-types";
-import { useQuasar } from "quasar";
-import { Invoice } from "../../types/invoice-types";
+import {InvoiceSettings} from "../../types/forms/invoice-settings-form-types";
+import {useQuasar} from "quasar";
+import {Invoice} from "../../types/invoice-types";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
@@ -34,6 +34,7 @@ async function loadInvoiceSettings() {
     await ipcRenderer.invoke("storeGet", "invoiceData", "invoiceSettings")
   );
 }
+
 async function loadInvoices() {
   invoices.value =
     ((await ipcRenderer.invoke(
@@ -43,6 +44,7 @@ async function loadInvoices() {
     )) as Invoice[]) || [];
   invoices.value.sort((a, b) => b.invoiceDate - a.invoiceDate);
 }
+
 async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
   await ipcRenderer.invoke(
     "storeSet",
@@ -62,6 +64,7 @@ async function onSubmitSettingsForm(invoiceSettings: InvoiceSettings) {
 async function onRefreshListing() {
   await loadInvoices();
 }
+
 onMounted(async () => {
   await loadInvoiceSettings();
   await loadInvoices();
@@ -81,11 +84,11 @@ onMounted(async () => {
       align="justify"
       narrow-indicator
     >
-      <q-tab name="invoices" label="Invoices" />
-      <q-tab name="settings" label="settings" />
+      <q-tab name="invoices" label="Invoices"/>
+      <q-tab name="settings" label="settings"/>
     </q-tabs>
 
-    <q-separator />
+    <q-separator/>
 
     <q-tab-panels v-model="tab" animated class="bg-dark">
       <q-tab-panel name="invoices">

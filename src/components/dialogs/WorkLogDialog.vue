@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useQuasar } from "quasar";
-import { Invoice } from "../../types/invoice-types";
-import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { WorkLog } from "../../types/project-types";
+import {useQuasar} from "quasar";
+import {Invoice} from "../../types/invoice-types";
+import {useRouter} from "vue-router";
+import {ref} from "vue";
+import {WorkLog} from "../../types/project-types";
 import WorkLogForm from "../forms/WorkLogForm.vue";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
   workLog: WorkLog;
   confirm: boolean;
 }
+
 const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "submit", workLog: WorkLog): void;
@@ -21,9 +22,11 @@ const emit = defineEmits<{
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const $q = useQuasar();
 const confirm = ref<boolean>(props.confirm);
+
 async function onSubmit(workLog: WorkLog): Promise<void> {
   emit("submit", JSON.parse(JSON.stringify(workLog)));
 }
+
 function onClose(): void {
   emit("close");
 }
@@ -57,7 +60,7 @@ function onClose(): void {
       </q-card-section>
 
       <q-card-section>
-        <WorkLogForm :form-data="workLog" v-on:submit="onSubmit" />
+        <WorkLogForm :form-data="workLog" v-on:submit="onSubmit"/>
       </q-card-section>
     </q-card>
   </q-dialog>

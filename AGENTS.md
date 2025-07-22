@@ -85,7 +85,11 @@ Task Master provides an MCP server that Claude Code can connect to. Configure in
   "mcpServers": {
     "task-master-ai": {
       "command": "npx",
-      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "args": [
+        "-y",
+        "--package=task-master-ai",
+        "task-master-ai"
+      ],
       "env": {
         "ANTHROPIC_API_KEY": "your_key_here",
         "PERPLEXITY_API_KEY": "your_key_here",
@@ -146,7 +150,8 @@ task-master analyze-complexity --research
 task-master expand --all --research
 ```
 
-If tasks already exist, another PRD can be parsed (with new information only!) using parse-prd with --append flag. This will add the generated tasks to the existing list of tasks..
+If tasks already exist, another PRD can be parsed (with new information only!) using parse-prd with --append flag. This
+will add the generated tasks to the existing list of tasks..
 
 #### 2. Daily Development Loop
 
@@ -277,7 +282,9 @@ task-master models --set-fallback gpt-4o-mini
   "description": "Set up JWT-based auth system",
   "status": "pending",
   "priority": "high",
-  "dependencies": ["1.1"],
+  "dependencies": [
+    "1.1"
+  ],
   "details": "Use bcrypt for hashing, JWT for tokens...",
   "testStrategy": "Unit tests for auth functions, integration tests for login flow",
   "subtasks": []
@@ -308,9 +315,11 @@ For large migrations or multi-step processes:
 
 1. Create a markdown PRD file describing the new changes: `touch task-migration-checklist.md` (prds can be .txt or .md)
 2. Use Taskmaster to parse the new prd with `task-master parse-prd --append` (also available in MCP)
-3. Use Taskmaster to expand the newly generated tasks into subtasks. Consdier using `analyze-complexity` with the correct --to and --from IDs (the new ids) to identify the ideal subtask amounts for each task. Then expand them.
+3. Use Taskmaster to expand the newly generated tasks into subtasks. Consdier using `analyze-complexity` with the
+   correct --to and --from IDs (the new ids) to identify the ideal subtask amounts for each task. Then expand them.
 4. Work through items systematically, checking them off as completed
-5. Use `task-master update-subtask` to log progress on each task/subtask and/or updating/researching them before/during implementation if getting stuck
+5. Use `task-master update-subtask` to log progress on each task/subtask and/or updating/researching them before/during
+   implementation if getting stuck
 
 ### Git Integration
 
@@ -414,4 +423,5 @@ These commands make AI calls and may take up to a minute:
 
 ---
 
-_This guide ensures Claude Code has immediate access to Task Master's essential functionality for agentic development workflows._
+_This guide ensures Claude Code has immediate access to Task Master's essential functionality for agentic development
+workflows._

@@ -1,4 +1,4 @@
-import { app } from "electron";
+import {app} from "electron";
 
 export interface AppConfig {
   NODE_ENV: 'development' | 'production' | 'test';
@@ -13,10 +13,10 @@ export interface AppConfig {
 
 function getNodeEnv(): 'development' | 'production' | 'test' {
   const env = process.env.NODE_ENV?.toLowerCase();
-  
+
   if (env === 'production' || env === 'prod') return 'production';
   if (env === 'test') return 'test';
-  
+
   return 'development';
 }
 

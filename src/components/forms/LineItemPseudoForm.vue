@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { numeric, required } from "@vuelidate/validators";
+import {numeric, required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
-import { LineItem } from "../../types/invoice-types";
+import {LineItem} from "../../types/invoice-types";
 import TextField from "./elements/TextField.vue";
 import TextareaField from "./elements/TextareaField.vue";
 import PriceField from "./elements/PriceField.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
 import NumberField from "./elements/NumberField.vue";
-import { formatCurrency } from "../../util/format-currency";
-import { computed } from "vue";
+import {formatCurrency} from "../../util/format-currency";
+import {computed} from "vue";
 import LineItemUnitSelectField from "./elements/LineItemUnitSelectField.vue";
 import FloatField from "./elements/FloatField.vue";
 
@@ -19,12 +19,12 @@ const emit = defineEmits<{
   (e: "update", formData: LineItem, validation: any): void;
 }>();
 const rules = {
-  quantity: { required, numeric },
-  title: { required },
-  description: { required },
-  unit: { required },
-  unitPrice: { required, numeric },
-  unitTotal: { required, numeric },
+  quantity: {required, numeric},
+  title: {required},
+  description: {required},
+  unit: {required},
+  unitPrice: {required, numeric},
+  unitTotal: {required, numeric},
 };
 const v$ = useVuelidate(rules, props.formData);
 </script>

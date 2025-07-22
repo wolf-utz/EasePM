@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
-import { Project, Task, TaskState } from "../../types/project-types";
+import {ref, onMounted, computed} from "vue";
+import {Project, Task, TaskState} from "../../types/project-types";
 import KanbanColumn from "../../components/kanban/KanbanColumn.vue";
 import TaskForm from "../../components/forms/TaskForm.vue";
 import generateTaskNumber from "../../util/tasknumber-generator";
 import moment from "moment";
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
-import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
-import { calculateBillableTime } from "../../util/project-util";
+import {useQuasar} from "quasar";
+import {useRouter} from "vue-router";
+import {convertUnixTimestampToTimeInput} from "../../util/time-string-to-unix";
+import {calculateBillableTime} from "../../util/project-util";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const router = useRouter();
 const project = ref<Project | null>(null);
-const { id } = defineProps({ id: String });
+const {id} = defineProps({id: String});
 const loaded = ref(false);
 const $q = useQuasar();
 
@@ -46,12 +46,15 @@ function onAddnewTask(): void {
 
   newTaskDialogOpen.value = true;
 }
+
 async function onTaskMoved(): Promise<void> {
   await updateProject();
 }
+
 async function onTaskUpdated(): Promise<void> {
   await updateProject();
 }
+
 async function onSubmitNewTask(): Promise<void> {
   newTaskDialogOpen.value = false;
   if (!project.value) {
@@ -68,6 +71,7 @@ async function onSubmitNewTask(): Promise<void> {
   tasksOpen.value.push(task);
   await updateProject();
 }
+
 async function updateProject() {
   if (!project.value) {
     console.error("Can not update Project: Project not loaded!");
@@ -102,6 +106,7 @@ async function updateProject() {
     message: "Your data has been updated successfully!",
   });
 }
+
 onMounted(async () => {
   project.value = (await ipcRenderer.invoke(
     "storeGetSingle",
@@ -182,7 +187,7 @@ onMounted(async () => {
     </div>
 
     <div>
-      <q-icon name="timer" size="xs" class="q-mr-xs" />
+      <q-icon name="timer" size="xs" class="q-mr-xs"/>
       {{ convertUnixTimestampToTimeInput(billableTime) }} (billable time)
     </div>
 
@@ -194,14 +199,14 @@ onMounted(async () => {
       <q-card flat dark>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6 q-mr-sm">{{ newTask.title }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-space/>
+          <q-btn icon="close" flat round dense v-close-popup/>
         </q-card-section>
 
-        <q-separator dark />
+        <q-separator dark/>
 
         <q-card-section>
-          <TaskForm :form-data="newTask" v-on:submit="onSubmitNewTask" />
+          <TaskForm :form-data="newTask" v-on:submit="onSubmitNewTask"/>
         </q-card-section>
       </q-card>
     </q-dialog>

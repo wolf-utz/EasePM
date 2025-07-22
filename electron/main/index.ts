@@ -1,18 +1,17 @@
 import "reflect-metadata"
-import { app, BrowserWindow, shell } from "electron";
-import { fileURLToPath } from "node:url";
+import {app, BrowserWindow, shell} from "electron";
+import {fileURLToPath} from "node:url";
 import path from "node:path";
 import os from "node:os";
-import { initializeDatabase, closeDatabase } from "../data-source"
-import {registerIpcHandlers} from  "./ipc-handlers";
+import {initializeDatabase, closeDatabase} from "../data-source"
+import {registerIpcHandlers} from "./ipc-handlers";
 
 // Initialize the database with proper error handling
 initializeDatabase().then(() => {
-    console.log("Database initialized successfully");
-    registerIpcHandlers();
+  registerIpcHandlers();
 }).catch((error) => {
-    console.error("Critical error: Failed to initialize database. Application will exit.", error);
-    app.quit();
+  console.error("Critical error: Failed to initialize database. Application will exit.", error);
+  app.quit();
 });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -64,9 +63,9 @@ async function createWindow() {
   });
 
   // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
+  win.webContents.setWindowOpenHandler(({url}) => {
     if (url.startsWith("https:")) shell.openExternal(url);
-    return { action: "deny" };
+    return {action: "deny"};
   });
 }
 

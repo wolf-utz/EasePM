@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { reactive } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-import { Project, ProjectState } from "../../types/project-types";
+import {reactive} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required} from "@vuelidate/validators";
+import {Project, ProjectState} from "../../types/project-types";
 import TextField from "./elements/TextField.vue";
 import CustomerSingleSelectField from "./elements/CustomerSingleSelectField.vue";
 import TextareaField from "./elements/TextareaField.vue";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 import ProjectStateSelectField from "./elements/ProjectStateSelectField.vue";
 
 const props = defineProps<{
@@ -20,10 +20,10 @@ const $q = useQuasar();
 const rules = {
   _id: {},
   _customerId: {},
-  title: { required },
+  title: {required},
   projectNumber: {},
-  description: { required },
-  state: { required },
+  description: {required},
+  state: {required},
 };
 const v$ = useVuelidate(rules, formData);
 

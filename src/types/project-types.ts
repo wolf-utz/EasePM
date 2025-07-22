@@ -3,6 +3,7 @@ export enum ProjectState {
   IN_PROGESS = "IN PROGESS",
   DONE = "DONE",
 }
+
 export enum TaskState {
   OPEN = "OPEN",
   IN_PROGRESS = "IN PROGRESS",

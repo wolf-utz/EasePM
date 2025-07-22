@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue";
-import { Validation } from "../../../types/forms/validation";
-import { Project } from "../../../types/project-types";
-defineExpose({ refreshOptions });
+import {onMounted, ref, watch} from "vue";
+import {Validation} from "../../../types/forms/validation";
+import {Project} from "../../../types/project-types";
+
+defineExpose({refreshOptions});
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
+
 interface Props {
   validation: Validation;
   label: string;
@@ -19,6 +21,7 @@ interface Option {
   label: string;
   value: string;
 }
+
 const props = defineProps<Props>();
 const loaded = ref<boolean>(false);
 const emit = defineEmits<{ (e: "change", value: string): void }>();
@@ -96,7 +99,7 @@ onMounted(refreshOptions);
       </template>
       <template v-slot:no-option>
         <q-item>
-          <q-item-section class="text-grey"> No results </q-item-section>
+          <q-item-section class="text-grey"> No results</q-item-section>
         </q-item>
       </template>
     </q-select>

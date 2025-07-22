@@ -1,6 +1,6 @@
-import { createApp } from "vue";
+import {createApp} from "vue";
 import App from "./App.vue";
-import { Quasar, Notify } from "quasar";
+import {Quasar, Notify} from "quasar";
 import router from "./routes";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
@@ -29,5 +29,5 @@ app.use(Quasar, {
 });
 app.use(router);
 app.mount("#app").$nextTick(() => {
-  postMessage({ payload: "removeLoading" }, "*");
+  postMessage({payload: "removeLoading"}, "*");
 });

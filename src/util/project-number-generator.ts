@@ -1,9 +1,9 @@
-import { Customer } from "../types/forms/customer-types";
-import { Project } from "../types/project-types";
+import {Customer} from "../types/forms/customer-types";
+import {Project} from "../types/project-types";
 
 export default async function generateProjectNumber({
-  _customerId,
-}: Project): Promise<string> {
+                                                      _customerId,
+                                                    }: Project): Promise<string> {
   const customer = await fetchCustomer(_customerId);
   const projects = await fetchProjects();
   const prefix =

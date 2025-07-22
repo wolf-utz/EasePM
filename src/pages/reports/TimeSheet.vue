@@ -2,8 +2,8 @@
 import TimesheetFilterForm from "../../components/forms/TimesheetFilterForm.vue";
 import TimeSheetPreview from "../../components/TimeSheetPreview.vue";
 import moment from "moment";
-import { TimesheetFilter } from "../../types/forms/timesheet-filter-types";
-import { computed, reactive } from "vue";
+import {TimesheetFilter} from "../../types/forms/timesheet-filter-types";
+import {computed, reactive} from "vue";
 
 const filter = reactive({
   startDate: moment().startOf("month").add(1, "day").unix(),
@@ -15,11 +15,12 @@ const showPreview = computed(
   () => filter._customerId && filter.startDate && filter.endDate
 );
 
-function onApplyFilter() {}
+function onApplyFilter() {
+}
 </script>
 
 <template>
   <h1 class="text-h5">Time Sheet</h1>
-  <TimesheetFilterForm :form-data="filter" v-on:submit="onApplyFilter" />
-  <TimeSheetPreview v-if="showPreview" :filter="filter" />
+  <TimesheetFilterForm :form-data="filter" v-on:submit="onApplyFilter"/>
+  <TimeSheetPreview v-if="showPreview" :filter="filter"/>
 </template>

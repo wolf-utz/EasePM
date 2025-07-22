@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { Validation } from "../../../types/forms/validation";
-import { Unit } from "../../../types/enums/line-item-unit";
+import {ref} from "vue";
+import {Validation} from "../../../types/forms/validation";
+import {Unit} from "../../../types/enums/line-item-unit";
 
 interface Props {
   validation: Validation;
@@ -48,7 +48,7 @@ function onChange(): void {
       </template>
       <template v-slot:no-option>
         <q-item>
-          <q-item-section class="text-grey"> No results </q-item-section>
+          <q-item-section class="text-grey"> No results</q-item-section>
         </q-item>
       </template>
     </q-select>

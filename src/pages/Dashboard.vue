@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 import ThreeColumn from "../components/layout/ThreeColumn.vue";
 
 const router = useRouter();
@@ -15,14 +15,15 @@ const router = useRouter();
         </q-card-section>
 
         <q-card-section class="q-pt-none row justify-center items-center">
-          <q-icon name="factory" size="xl" class="" />
+          <q-icon name="factory" size="xl" class=""/>
         </q-card-section>
 
         <q-card-actions vertical>
           <q-btn
             color="primary"
             @click="() => router.push({ name: 'invoices' })"
-            >Go to Invoices</q-btn
+          >Go to Invoices
+          </q-btn
           >
         </q-card-actions>
       </q-card>
@@ -34,13 +35,14 @@ const router = useRouter();
         </q-card-section>
 
         <q-card-section class="q-pt-none row justify-center items-center">
-          <q-icon name="lightbulb" size="xl" class="" />
+          <q-icon name="lightbulb" size="xl" class=""/>
         </q-card-section>
         <q-card-actions vertical>
           <q-btn
             color="primary"
             @click="() => router.push({ name: 'projects' })"
-            >Go to Projects</q-btn
+          >Go to Projects
+          </q-btn
           >
         </q-card-actions>
       </q-card>
@@ -52,13 +54,14 @@ const router = useRouter();
         </q-card-section>
 
         <q-card-section class="q-pt-none row justify-center items-center">
-          <q-icon name="request_page" size="xl" class="" />
+          <q-icon name="request_page" size="xl" class=""/>
         </q-card-section>
         <q-card-actions vertical>
           <q-btn
             color="primary"
             @click="() => router.push({ name: 'customer' })"
-            >Go to Customers</q-btn
+          >Go to Customers
+          </q-btn
           >
         </q-card-actions>
       </q-card>

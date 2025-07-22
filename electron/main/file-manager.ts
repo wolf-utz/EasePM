@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import { pathToFileURL } from "url";
+import {pathToFileURL} from "url";
 
 class FileManager {
   /**
@@ -30,7 +30,7 @@ class FileManager {
    */
   createFolderIfNotExists(folderPath: string): void {
     if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
+      fs.mkdirSync(folderPath, {recursive: true});
     }
   }
 

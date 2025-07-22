@@ -1,4 +1,4 @@
-import { test, expect, _electron as electron } from '@playwright/test';
+import {test, expect, _electron as electron} from '@playwright/test';
 
 // Test helper to reset database before each test
 async function resetTestDatabase(electronApp: any) {
@@ -34,20 +34,20 @@ test.describe('EasePM Database Integration', () => {
   test('should use separate test database', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
     await firstWindow.waitForLoadState('domcontentloaded');
-    
+
     // Reset test database for clean state
     await resetTestDatabase(electronApp);
-    
+
     // Verify database is empty after reset
     const customers = await firstWindow.evaluate(() => {
       return (window as any).ipcRenderer.invoke('storeGet', 'customerData', 'customerData');
     });
-    
+
     expect(customers).toEqual([]);
 
     await electronApp.close();
@@ -56,26 +56,26 @@ test.describe('EasePM Database Integration', () => {
   test('should create and retrieve customer data', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
     await firstWindow.waitForLoadState('domcontentloaded');
-    
+
     // Reset test database for clean state
     await resetTestDatabase(electronApp);
-    
+
     // Create a test customer
     const createdCustomer = await createTestCustomer(electronApp);
     expect(createdCustomer).toBeDefined();
     expect(createdCustomer.firstName).toBe('Test');
     expect(createdCustomer.lastName).toBe('Customer');
-    
+
     // Retrieve all customers
     const customers = await firstWindow.evaluate(() => {
       return (window as any).ipcRenderer.invoke('storeGet', 'customerData', 'customerData');
     });
-    
+
     expect(customers).toHaveLength(1);
     expect(customers[0].firstName).toBe('Test');
 
@@ -85,20 +85,20 @@ test.describe('EasePM Database Integration', () => {
   test('should reset database between tests', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
     await firstWindow.waitForLoadState('domcontentloaded');
-    
+
     // Reset test database for clean state
     await resetTestDatabase(electronApp);
-    
+
     // Verify database is empty (previous test data should be gone)
     const customers = await firstWindow.evaluate(() => {
       return (window as any).ipcRenderer.invoke('storeGet', 'customerData', 'customerData');
     });
-    
+
     expect(customers).toEqual([]);
 
     await electronApp.close();

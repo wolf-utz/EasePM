@@ -1,9 +1,9 @@
-import { Customer } from "../types/forms/customer-types";
-import { Invoice } from "../types/invoice-types";
+import {Customer} from "../types/forms/customer-types";
+import {Invoice} from "../types/invoice-types";
 
 export default async function generateInvoiceNumber({
-  _customerId,
-}: Invoice): Promise<string> {
+                                                      _customerId,
+                                                    }: Invoice): Promise<string> {
   const customer = await fetchCustomer(_customerId);
   const invoices = await fetchInvoices();
 

@@ -1,15 +1,15 @@
-import { TimesheetFilter } from "./types";
-import { convertUnixTimestampToTimeInput } from "./util/time-string-to-unix";
+import {TimesheetFilter} from "./types";
+import {convertUnixTimestampToTimeInput} from "./util/time-string-to-unix";
 import * as XLSX from "xlsx";
 import fs from "fs";
 import path from "node:path";
-import { app } from "electron";
-import { formatUnixTimestampToGermanDate } from "./util/timestamp-date-util";
-import { createServiceContainer, ServiceContainer } from "../services/Container";
-import { Customer } from "../entity/Customer";
-import { Project } from "../entity/Project";
-import { Task } from "../entity/Task";
-import { WorkLog } from "../entity/WorkLog";
+import {app} from "electron";
+import {formatUnixTimestampToGermanDate} from "./util/timestamp-date-util";
+import {createServiceContainer, ServiceContainer} from "../services/Container";
+import {Customer} from "../entity/Customer";
+import {Project} from "../entity/Project";
+import {Task} from "../entity/Task";
+import {WorkLog} from "../entity/WorkLog";
 
 interface ReportDataRow {
   project: Project;
@@ -40,7 +40,7 @@ export async function createTimeSheetReportCsvString(
   );
 
   if (!fs.existsSync(exportDirectory)) {
-    fs.mkdirSync(exportDirectory, { recursive: true });
+    fs.mkdirSync(exportDirectory, {recursive: true});
   }
 
   fs.writeFileSync(reportFilePath, buffer);
@@ -103,7 +103,7 @@ function collectReportData(
         if (workLog.creationDateTime > endDate) {
           continue;
         }
-        rows.push({ project, task, workLog });
+        rows.push({project, task, workLog});
       }
     }
   }
@@ -136,7 +136,7 @@ function createReportBuffer(data: ReportDataRow[]): Buffer {
   XLSX.utils.book_append_sheet(workbook, worksheet, "Time Sheet Report");
 
   // Generate buffer
-  return XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+  return XLSX.write(workbook, {type: "buffer", bookType: "xlsx"});
 }
 
 function getExportDirectory(): string {

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { Customer } from "../../types/forms/customer-types";
+import {ref, onMounted} from "vue";
+import {Customer} from "../../types/forms/customer-types";
 import AppCustomerForm from "../../components/forms/CustomerForm.vue";
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import {useQuasar} from "quasar";
+import {useRouter} from "vue-router";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
 const router = useRouter();
 const $q = useQuasar();
 const customer = ref<Customer | null>(null);
-const { id } = defineProps({ id: String });
+const {id} = defineProps({id: String});
 const loaded = ref(false);
 
 async function onSubmit(updatedCustomer: Customer): Promise<void> {
@@ -28,7 +28,7 @@ async function onSubmit(updatedCustomer: Customer): Promise<void> {
     position: "top",
     message: "Your data has been updated successfully!",
   });
-  await router.push({ name: "customer" });
+  await router.push({name: "customer"});
 }
 
 onMounted(async () => {
@@ -56,10 +56,10 @@ onMounted(async () => {
     </q-banner>
   </div>
   <div v-else>
-    <q-skeleton type="rect" class="q-mb-md" />
-    <q-skeleton type="rect" class="q-mb-md" />
-    <q-skeleton type="rect" class="q-mb-md" />
-    <q-skeleton type="rect" class="q-mb-md" />
+    <q-skeleton type="rect" class="q-mb-md"/>
+    <q-skeleton type="rect" class="q-mb-md"/>
+    <q-skeleton type="rect" class="q-mb-md"/>
+    <q-skeleton type="rect" class="q-mb-md"/>
   </div>
   <q-page-sticky position="top-right" :offset="[18, 18]">
     <q-btn

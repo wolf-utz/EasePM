@@ -56,3 +56,5 @@ node_modules/
 .windsurf/
 .clinerules
 .claude
+
+migration-tool/

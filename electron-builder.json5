@@ -8,9 +8,14 @@
   directories: {
     output: "release/${version}",
   },
-  files: ["dist", "dist-electron"],
+  files: [
+    "dist",
+    "dist-electron"
+  ],
   mac: {
-    target: ["dmg"],
+    target: [
+      "dmg"
+    ],
     artifactName: "${productName}-Mac-${version}-Installer.${ext}",
     icon: "build/icons/icon.icns",
   },
@@ -18,7 +23,9 @@
     target: [
       {
         target: "nsis",
-        arch: ["x64"],
+        arch: [
+          "x64"
+        ],
       },
     ],
     artifactName: "${productName}-Windows-${version}-Setup.${ext}",
@@ -32,7 +39,9 @@
   },
   linux: {
     category: "Utility",
-    target: ["AppImage"],
+    target: [
+      "AppImage"
+    ],
     artifactName: "${productName}-Linux-${version}.${ext}",
   },
 }

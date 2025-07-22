@@ -1,6 +1,6 @@
-import { Project } from "../types/project-types";
+import {Project} from "../types/project-types";
 
-export function calculateBillableTime({ tasks }: Project): number {
+export function calculateBillableTime({tasks}: Project): number {
   let timeTotal: number = 0;
 
   if (tasks.length === 0) {

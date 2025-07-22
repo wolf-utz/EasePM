@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
-import { Validation } from "../../../types/forms/validation";
+import {ref, watch} from "vue";
+import {Validation} from "../../../types/forms/validation";
 
 interface Props {
   validation: Validation;
@@ -46,7 +46,7 @@ watch(internalValue, (newValue) => {
       @blur="onChange"
       @change="onChange"
     >
-      <template v-slot:prepend> € </template>
+      <template v-slot:prepend> €</template>
       <template v-slot:error>
         <div
           class="input-errors"

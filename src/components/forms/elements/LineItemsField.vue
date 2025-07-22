@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { LineItem } from "../../../types/invoice-types";
+import {ref} from "vue";
+import {LineItem} from "../../../types/invoice-types";
 import LineItemPseudoForm from "../LineItemPseudoForm.vue";
-import { Unit } from "../../../types/enums/line-item-unit";
-import { formatCurrency } from "../../../util/format-currency";
+import {Unit} from "../../../types/enums/line-item-unit";
+import {formatCurrency} from "../../../util/format-currency";
 
 const props = defineProps<{
   lineItems: LineItem[];
@@ -12,6 +12,7 @@ const emit = defineEmits<{
   (e: "update", lineItems: LineItem[]): void;
 }>();
 const lineItems = ref<LineItem[]>(props.lineItems || []);
+
 function onAddLineItem(): void {
   const newLineItem: LineItem = {
     quantity: 1,
@@ -23,13 +24,16 @@ function onAddLineItem(): void {
   };
   lineItems.value.push(newLineItem);
 }
+
 function onUpdateLineItem(): void {
   emit("update", lineItems.value);
 }
+
 function removeLineItem(index: number): void {
   lineItems.value.splice(index, 1);
   emit("update", lineItems.value);
 }
+
 const positionTotal = ref<number>(0);
 </script>
 
@@ -43,10 +47,10 @@ const positionTotal = ref<number>(0);
 
   <q-banner v-if="lineItems.length === 0" class="bg-dark q-pb-md">
     <template v-slot:avatar>
-      <q-icon name="error" color="negative" />
+      <q-icon name="error" color="negative"/>
     </template>
     There are no positions yet. Please add one or more.
-    <template v-slot:action> </template>
+    <template v-slot:action></template>
   </q-banner>
 
   <q-list

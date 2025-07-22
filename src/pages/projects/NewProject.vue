@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import AppProjectForm from "../../components/forms/ProjectForm.vue";
-import { Project, ProjectState } from "../../types/project-types";
-import { v6 as uuidv6, v6 } from "uuid";
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import {Project, ProjectState} from "../../types/project-types";
+import {v6 as uuidv6, v6} from "uuid";
+import {useQuasar} from "quasar";
+import {useRouter} from "vue-router";
 import moment from "moment";
 import generateProjectNumber from "../../util/project-number-generator";
 
@@ -22,6 +22,7 @@ const newProject: Project = {
   tasks: [],
   taskAutoIncrement: 1,
 };
+
 async function onSubmit(newProject: Project) {
   newProject._id = uuidv6();
   newProject.projectNumber = await generateProjectNumber(newProject);
@@ -40,11 +41,11 @@ async function onSubmit(newProject: Project) {
     position: "top",
     message: "Your data has been saved successfully!",
   });
-  await router.push({ name: "projects" });
+  await router.push({name: "projects"});
 }
 </script>
 
 <template>
   <h1 class="text-h5">Create a new project</h1>
-  <AppProjectForm v-on:submit="onSubmit" :formData="newProject" />
+  <AppProjectForm v-on:submit="onSubmit" :formData="newProject"/>
 </template>

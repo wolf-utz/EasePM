@@ -1,15 +1,15 @@
-import { AppDataSource } from '../data-source';
-import { CustomerService } from './CustomerService';
-import { InvoiceService } from './InvoiceService';
-import { ProjectService } from './ProjectService';
-import { TaskService } from './TaskService';
-import { WorkLogService } from './WorkLogService';
-import { Customer } from '../entity/Customer';
-import { Invoice } from '../entity/Invoice';
-import { InvoiceLineItem } from '../entity/InvoiceLineItem';
-import { Project } from '../entity/Project';
-import { Task } from '../entity/Task';
-import { WorkLog } from '../entity/WorkLog';
+import {AppDataSource} from '../data-source';
+import {CustomerService} from './CustomerService';
+import {InvoiceService} from './InvoiceService';
+import {ProjectService} from './ProjectService';
+import {TaskService} from './TaskService';
+import {WorkLogService} from './WorkLogService';
+import {Customer} from '../entity/Customer';
+import {Invoice} from '../entity/Invoice';
+import {InvoiceLineItem} from '../entity/InvoiceLineItem';
+import {Project} from '../entity/Project';
+import {Task} from '../entity/Task';
+import {WorkLog} from '../entity/WorkLog';
 
 export interface ServiceContainer {
   customerService: CustomerService;

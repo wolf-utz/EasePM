@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { Project } from "../../types/project-types";
-import { useQuasar } from "quasar";
-import { convertUnixToGermanDate } from "../../util/timestamp";
-import { calculateBillableTime } from "../../util/project-util";
-import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
+import {Project} from "../../types/project-types";
+import {useQuasar} from "quasar";
+import {convertUnixToGermanDate} from "../../util/timestamp";
+import {calculateBillableTime} from "../../util/project-util";
+import {convertUnixTimestampToTimeInput} from "../../util/time-string-to-unix";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
@@ -75,25 +75,28 @@ const columns: Array<{
 ];
 
 async function onAddNewProject() {
-  await router.push({ name: "projects/new" });
+  await router.push({name: "projects/new"});
 }
 
 function onEditProject(project: Project) {
   router.push({
     name: "projects/edit",
-    params: { id: project._id },
+    params: {id: project._id},
   });
 }
+
 function onOpenRemoveProjectConfirmDialoge(project: Project) {
   projectToRemove.value = project;
   confirm.value = true;
 }
+
 function onOpenKanban(project: Project) {
   router.push({
     name: "projects/kanban",
-    params: { id: project._id },
+    params: {id: project._id},
   });
 }
+
 async function onRemoveProject() {
   if (!projectToRemove) {
     return;
@@ -157,7 +160,7 @@ onMounted(async () => {
           title="Edit project"
           @click="onEditProject(props.row)"
         >
-          <q-icon size="xs" color="grey" name="edit" />
+          <q-icon size="xs" color="grey" name="edit"/>
         </q-btn>
         <q-btn
           fab
@@ -168,7 +171,7 @@ onMounted(async () => {
           title="Remove project"
           @click="onOpenRemoveProjectConfirmDialoge(props.row)"
         >
-          <q-icon size="xs" color="grey" name="delete_forever" />
+          <q-icon size="xs" color="grey" name="delete_forever"/>
         </q-btn>
         <q-btn
           fab
@@ -179,7 +182,7 @@ onMounted(async () => {
           title="Open kanban board"
           @click="onOpenKanban(props.row)"
         >
-          <q-icon size="xs" color="grey" name="view_kanban" />
+          <q-icon size="xs" color="grey" name="view_kanban"/>
         </q-btn>
       </q-td>
     </template>
@@ -211,7 +214,7 @@ onMounted(async () => {
   <q-dialog v-model="confirm" persistent>
     <q-card class="bg-dark">
       <q-card-section class="row items-center">
-        <q-avatar icon="delete" color="negative" text-color="white" />
+        <q-avatar icon="delete" color="negative" text-color="white"/>
         <span class="q-pt-none q-ml-sm">
           Do you really want to remove the project
           <b>{{ projectToRemove?.title }}</b>
@@ -219,7 +222,7 @@ onMounted(async () => {
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat label="Cancel" color="primary" v-close-popup/>
         <q-btn
           flat
           label="Remove project"

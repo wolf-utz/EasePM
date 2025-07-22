@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { Customer } from "../../types/forms/customer-types";
-import { useQuasar } from "quasar";
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
+import {Customer} from "../../types/forms/customer-types";
+import {useQuasar} from "quasar";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
@@ -80,19 +80,21 @@ const columns: Array<{
 ];
 
 async function onAddnewCustomer() {
-  await router.push({ name: "customer/new" });
+  await router.push({name: "customer/new"});
 }
 
 function onEditCustomer(customer: Customer) {
   router.push({
     name: "customer/edit",
-    params: { id: customer._id },
+    params: {id: customer._id},
   });
 }
+
 function openRemoveCustomerConfirmDialoge(customer: Customer) {
   customerToRemove.value = customer;
   confirm.value = true;
 }
+
 async function onRemoveCustomer() {
   if (!customerToRemove) {
     return;
@@ -156,7 +158,7 @@ onMounted(async () => {
           title="Edit customer"
           @click="onEditCustomer(props.row)"
         >
-          <q-icon size="xs" color="grey" name="edit" />
+          <q-icon size="xs" color="grey" name="edit"/>
         </q-btn>
         <q-btn
           fab
@@ -167,7 +169,7 @@ onMounted(async () => {
           title="Remove customer"
           @click="openRemoveCustomerConfirmDialoge(props.row)"
         >
-          <q-icon size="xs" color="grey" name="delete_forever" />
+          <q-icon size="xs" color="grey" name="delete_forever"/>
         </q-btn>
       </q-td>
     </template>
@@ -187,7 +189,7 @@ onMounted(async () => {
   <q-dialog v-model="confirm" persistent>
     <q-card class="bg-dark">
       <q-card-section class="row items-center">
-        <q-avatar icon="delete" color="negative" text-color="white" />
+        <q-avatar icon="delete" color="negative" text-color="white"/>
         <span class="q-pt-none q-ml-sm">
           Do you really want to remove the customer
           <b>{{ customerToRemove?.customerNumber }}</b>
@@ -195,7 +197,7 @@ onMounted(async () => {
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
+        <q-btn flat label="Cancel" color="primary" v-close-popup/>
         <q-btn
           flat
           label="Remove customer"

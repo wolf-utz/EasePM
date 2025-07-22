@@ -1,10 +1,10 @@
-import { Customer } from "../types/forms/customer-types";
-import { Project } from "../types/project-types";
+import {Customer} from "../types/forms/customer-types";
+import {Project} from "../types/project-types";
 
 export default async function generateTaskNumber({
-  _customerId,
-  taskAutoIncrement,
-}: Project): Promise<string> {
+                                                   _customerId,
+                                                   taskAutoIncrement,
+                                                 }: Project): Promise<string> {
   const customer = await fetchCustomer(_customerId);
   const prefix =
     `T${customer.firstName[0]}${customer.lastName[0]}`.toUpperCase();

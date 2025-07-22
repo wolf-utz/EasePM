@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import {computed, reactive, ref} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required} from "@vuelidate/validators";
 import TextField from "./elements/TextField.vue";
-import { useQuasar } from "quasar";
-import { Task, WorkLog } from "../../types/project-types";
+import {useQuasar} from "quasar";
+import {Task, WorkLog} from "../../types/project-types";
 import EditorField from "./elements/EditorField.vue";
-import { convertUnixTimestampToTimeInput } from "../../util/time-string-to-unix";
+import {convertUnixTimestampToTimeInput} from "../../util/time-string-to-unix";
 import WorkLogDialog from "../dialogs/WorkLogDialog.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
 import moment from "moment";
-import { unixTimestampToDateString } from "../../util/timestamp";
+import {unixTimestampToDateString} from "../../util/timestamp";
 
 const props = defineProps<{
   formData: Task;
@@ -23,8 +23,8 @@ const emit = defineEmits<{
 const formData = reactive<Task>(props.formData);
 const $q = useQuasar();
 const rules = {
-  title: { required },
-  description: { required },
+  title: {required},
+  description: {required},
 };
 const v$ = useVuelidate(rules, formData);
 const tab = ref<string>("workLogs");
@@ -47,6 +47,7 @@ const timeBillableTotal = computed(() =>
     return workLog.billable ? total + workLog.trackedTime : total;
   }, 0)
 );
+
 function onSubmit(): void {
   v$.value.$touch();
   if (!v$.value.$invalid) {
@@ -62,6 +63,7 @@ function onSubmit(): void {
     message: "The submited data is not valid. Please check the form.",
   });
 }
+
 function onNewWorkLog(): void {
   newWorkLog.value = JSON.parse(JSON.stringify(emptyWorkLog));
   showNewWorkLogDialog.value = true;
@@ -150,14 +152,14 @@ function onDeleteWorkLog(workLog: WorkLog): void {
       align="justify"
       narrow-indicator
     >
-      <q-tab name="comments" label="Comments" :disable="true" />
-      <q-tab name="workLogs" label="Work logs" />
+      <q-tab name="comments" label="Comments" :disable="true"/>
+      <q-tab name="workLogs" label="Work logs"/>
     </q-tabs>
 
-    <q-separator />
+    <q-separator/>
 
     <q-tab-panels v-model="tab" animated class="bg-dark">
-      <q-tab-panel name="comments"> </q-tab-panel>
+      <q-tab-panel name="comments"></q-tab-panel>
 
       <q-tab-panel name="workLogs">
         <q-list bordered padding dark class="q-mb-md">
@@ -220,7 +222,7 @@ function onDeleteWorkLog(workLog: WorkLog): void {
             <q-badge align="middle" color="dark">
               {{ convertUnixTimestampToTimeInput(timeTotal) }}
             </q-badge>
-            <q-space />
+            <q-space/>
             Billable:
             <q-badge align="middle">
               {{ convertUnixTimestampToTimeInput(timeBillableTotal) }}

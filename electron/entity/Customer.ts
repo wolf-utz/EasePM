@@ -5,39 +5,39 @@ import {Project} from "./Project";
 
 @Entity("customer")
 export class Customer {
-    @PrimaryGeneratedColumn("uuid")
-    _id: string
+  @PrimaryGeneratedColumn("uuid")
+  _id: string
 
-    @Column({type: "varchar"})
-    customerNumber: string
+  @Column({type: "varchar"})
+  customerNumber: string
 
-    @Column({type: "varchar"})
-    company: string
+  @Column({type: "varchar"})
+  company: string
 
-    @Column({type: "varchar"})
-    firstName: string
+  @Column({type: "varchar"})
+  firstName: string
 
-    @Column({type: "varchar"})
-    lastName: string
+  @Column({type: "varchar"})
+  lastName: string
 
-    @Column({type: "text"})
-    address: string
+  @Column({type: "text"})
+  address: string
 
-    @Column({type: "varchar"})
-    city: string
+  @Column({type: "varchar"})
+  city: string
 
-    @Column({type: "varchar"})
-    zip: string
+  @Column({type: "varchar"})
+  zip: string
 
-    @Column({type: "varchar"})
-    email: string
+  @Column({type: "varchar"})
+  email: string
 
-    @Column({type: "varchar"})
-    country: string
+  @Column({type: "varchar"})
+  country: string
 
-    @OneToMany(() => Invoice, (invoice) => invoice.customer)
-    invoices: Invoice[]
+  @OneToMany(() => Invoice, (invoice) => invoice.customer)
+  invoices: Invoice[]
 
-    @OneToMany(() => Project, (project) => project.customer)
-    projects: Project[]
+  @OneToMany(() => Project, (project) => project.customer)
+  projects: Project[]
 }

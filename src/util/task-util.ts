@@ -1,6 +1,6 @@
-import { Task } from "../types/project-types";
+import {Task} from "../types/project-types";
 
-export function calculateBillableTimeOfTask({ workLogs }: Task): number {
+export function calculateBillableTimeOfTask({workLogs}: Task): number {
   let timeTotal: number = 0;
 
   if (workLogs.length === 0) {

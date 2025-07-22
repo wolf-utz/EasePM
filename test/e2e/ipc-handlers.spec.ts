@@ -1,4 +1,4 @@
-import { test, expect, _electron as electron } from '@playwright/test';
+import {test, expect, _electron as electron} from '@playwright/test';
 
 // Test helper to reset database before each test
 async function resetTestDatabase(electronApp: any) {
@@ -16,7 +16,7 @@ test.describe('IPC Handlers Error Handling', () => {
   test('should handle missing parameters in storeAdd', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
@@ -27,9 +27,9 @@ test.describe('IPC Handlers Error Handling', () => {
     const result1 = await firstWindow.evaluate(async () => {
       try {
         await (window as any).ipcRenderer.invoke('storeAdd', null, 'customerData', {});
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     });
 
@@ -40,9 +40,9 @@ test.describe('IPC Handlers Error Handling', () => {
     const result2 = await firstWindow.evaluate(async () => {
       try {
         await (window as any).ipcRenderer.invoke('storeAdd', 'customerData', null, {});
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     });
 
@@ -53,9 +53,9 @@ test.describe('IPC Handlers Error Handling', () => {
     const result3 = await firstWindow.evaluate(async () => {
       try {
         await (window as any).ipcRenderer.invoke('storeAdd', 'customerData', 'customerData', null);
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     });
 
@@ -68,7 +68,7 @@ test.describe('IPC Handlers Error Handling', () => {
   test('should handle validation errors in customer creation', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
@@ -82,9 +82,9 @@ test.describe('IPC Handlers Error Handling', () => {
           firstName: 'Test',
           // Missing lastName and customerNumber
         });
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     });
 
@@ -97,7 +97,7 @@ test.describe('IPC Handlers Error Handling', () => {
   test('should handle validation errors in customer update', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
@@ -125,9 +125,9 @@ test.describe('IPC Handlers Error Handling', () => {
         await (window as any).ipcRenderer.invoke('storeUpdate', 'customerData', 'customerData', customerId, {
           firstName: '', // Empty firstName should fail validation
         });
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     }, customer._id);
 
@@ -140,7 +140,7 @@ test.describe('IPC Handlers Error Handling', () => {
   test('should handle non-existent entity deletion', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
@@ -151,9 +151,9 @@ test.describe('IPC Handlers Error Handling', () => {
     const result = await firstWindow.evaluate(async () => {
       try {
         await (window as any).ipcRenderer.invoke('storeRemoveSingle', 'customerData', 'customerData', 'non-existent-id');
-        return { success: true };
+        return {success: true};
       } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
       }
     });
 
@@ -166,7 +166,7 @@ test.describe('IPC Handlers Error Handling', () => {
   test('should handle backward compatibility with existing API format', async () => {
     const electronApp = await electron.launch({
       args: ['./dist-electron/main/index.js'],
-      env: { ...process.env, NODE_ENV: 'test' },
+      env: {...process.env, NODE_ENV: 'test'},
     });
 
     const firstWindow = await electronApp.firstWindow();
