@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import InvoiceDataForm from "../../components/forms/InvoiceDataForm.vue";
 import moment from "moment";
-import { Invoice } from "../../types/invoice-types";
-import { useQuasar } from "quasar";
-import { v6 } from "uuid";
-import { useRouter } from "vue-router";
+import {Invoice} from "../../types/invoice-types";
+import {useQuasar} from "quasar";
+import {v6} from "uuid";
+import {useRouter} from "vue-router";
 import generateInvoiceNumber from "../../util/invoice-number-generator";
 
 // @ts-ignore
@@ -40,14 +40,14 @@ async function onSubmit(invoice: Invoice): Promise<void> {
     position: "top",
     message: "The draft of the invoice has been created successfully.",
   });
-  await router.push({ name: "invoices" });
+  await router.push({name: "invoices"});
 }
 </script>
 
 <template>
   <h1 class="text-h5">New invoice</h1>
 
-  <InvoiceDataForm :form-data="formData" v-on:submit="onSubmit" />
+  <InvoiceDataForm :form-data="formData" v-on:submit="onSubmit"/>
   <q-page-sticky position="top-right" :offset="[18, 18]">
     <q-btn
       fab

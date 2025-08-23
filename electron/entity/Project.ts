@@ -1,33 +1,37 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm"
 import {Task} from "./Task";
 import {Customer} from "./Customer";
 
-@Entity()
+@Entity("project")
 export class Project {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn("uuid")
+  _id: string
 
-    @Column({type: "varchar"})
-    projectNumber: string
+  @Column({type: "varchar"})
+  projectNumber: string
 
-    @Column({type: "varchar"})
-    title: string
+  @Column({type: "varchar"})
+  title: string
 
-    @Column({type: "text"})
-    description: string
+  @Column({type: "text"})
+  description: string
 
-    @Column({type: "varchar"})
-    state: string
+  @Column({type: "varchar"})
+  state: string
 
-    @Column({type: "int"})
-    creationDateTime: number
+  @Column({type: "int"})
+  creationDateTime: number
 
-    @Column({type: "int"})
-    taskAutoIncrement: number
+  @Column({type: "int"})
+  taskAutoIncrement: number
 
-    @OneToMany(() => Task, (task) => task.project)
-    tasks: Task[]
+  @Column({type: "varchar"})
+  _customerId: string
 
-    @ManyToOne(() => Customer, (customer) => customer.invoices)
-    customer: Customer
+  @OneToMany(() => Task, (task) => task.project)
+  tasks: Task[]
+
+  @ManyToOne(() => Customer, (customer) => customer.projects)
+  @JoinColumn({name: "_customerId"})
+  customer: Customer
 }

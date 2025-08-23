@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { computed, onMounted, watch } from "vue";
-import { TimesheetFilter } from "../types/forms/timesheet-filter-types";
-import { Project, Task, WorkLog } from "../types/project-types";
-import { ref } from "vue";
-import { convertUnixTimestampToTimeInput } from "../util/time-string-to-unix";
-import { saveAs } from "file-saver";
-import { base64ToBlob } from "../util/base64-to-blob";
-import { QTableProps } from "quasar";
+import {computed, onMounted, watch} from "vue";
+import {TimesheetFilter} from "../types/forms/timesheet-filter-types";
+import {Project, Task, WorkLog} from "../types/project-types";
+import {ref} from "vue";
+import {convertUnixTimestampToTimeInput} from "../util/time-string-to-unix";
+import {saveAs} from "file-saver";
+import {base64ToBlob} from "../util/base64-to-blob";
+import {QTableProps} from "quasar";
 
 interface Props {
   filter: TimesheetFilter;
 }
+
 interface ReportDataRow {
   project: Project;
   task: Task;
@@ -98,7 +99,7 @@ async function onDownload() {
   saveAs(base64ToBlob(pdfBase64), "time-sheet.xlsx");
 }
 
-watch(() => props.filter, refreshReportData, { deep: true });
+watch(() => props.filter, refreshReportData, {deep: true});
 onMounted(refreshReportData);
 </script>
 

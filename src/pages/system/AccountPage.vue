@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { reactive, onMounted, ref } from "vue";
-import { useQuasar } from "quasar";
+import {reactive, onMounted, ref} from "vue";
+import {useQuasar} from "quasar";
 import AppPersonalFormData from "../../components/forms/PersonalDataForm.vue";
-import { PersonalFormData } from "../../types/forms/personal-data-form-types";
+import {PersonalFormData} from "../../types/forms/personal-data-form-types";
 
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;

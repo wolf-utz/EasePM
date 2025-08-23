@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge } from "electron";
+import {ipcRenderer, contextBridge} from "electron";
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld("ipcRenderer", {
@@ -109,7 +109,7 @@ function useLoading() {
 
 // ----------------------------------------------------------------------
 
-const { appendLoading, removeLoading } = useLoading();
+const {appendLoading, removeLoading} = useLoading();
 domReady().then(appendLoading);
 
 window.onmessage = (ev) => {

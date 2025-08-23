@@ -1,9 +1,9 @@
-import { Customer } from "../types/forms/customer-types";
+import {Customer} from "../types/forms/customer-types";
 
 export default function generateCustomer({
-  firstName,
-  lastName,
-}: Customer): string {
+                                           firstName,
+                                           lastName,
+                                         }: Customer): string {
   const prefix = `${firstName[0]}${lastName[0]}`.toUpperCase();
   const date = new Date();
   const year = date.getFullYear().toString().slice(-2);

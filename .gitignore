@@ -29,6 +29,15 @@ package-lock.json
 pnpm-lock.yaml
 yarn.lock
 
+# Test results
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Test database
+**/easepm-test.db
+**/easepm-test.db-*
+
 # Added by Task Master AI
 dev-debug.log
 # Dependency directories
@@ -47,3 +56,5 @@ node_modules/
 .windsurf/
 .clinerules
 .claude
+
+migration-tool/

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { reactive } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email } from "@vuelidate/validators";
-import { Customer } from "../../types/forms/customer-types";
+import {reactive} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required, email} from "@vuelidate/validators";
+import {Customer} from "../../types/forms/customer-types";
 import TextField from "./elements/TextField.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 
 const props = defineProps<{
   formData: Customer;
@@ -19,14 +19,14 @@ const $q = useQuasar();
 const rules = {
   _id: {},
   customerNumber: {},
-  company: { },
-  firstName: { required },
-  lastName: { required },
-  email: { required, email },
-  address: { required },
-  city: { required },
-  zip: { required },
-  country: { required },
+  company: {},
+  firstName: {required},
+  lastName: {required},
+  email: {required, email},
+  address: {required},
+  city: {required},
+  zip: {required},
+  country: {required},
 };
 const v$ = useVuelidate(rules, formData);
 

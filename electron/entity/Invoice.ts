@@ -1,36 +1,40 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn} from "typeorm"
 import {InvoiceLineItem} from "./InvoiceLineItem";
 import {Customer} from "./Customer";
 
-@Entity()
+@Entity("invoice")
 export class Invoice {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn("uuid")
+  _id: string
 
-    @Column({type: "varchar"})
-    invoiceNumber: string
+  @Column({type: "varchar"})
+  invoiceNumber: string
 
-    @Column({type: "int"})
-    total: number
+  @Column({type: "int"})
+  total: number
 
-    @Column({type: "int"})
-    invoiceDate: number
+  @Column({type: "int"})
+  invoiceDate: number
 
-    @Column({type: "int"})
-    deliveryDate: number
+  @Column({type: "int"})
+  deliveryDate: number
 
-    @Column({type: "int"})
-    draft: boolean
+  @Column({type: "boolean"})
+  draft: boolean
 
-    @Column({type: "int"})
-    canceled: boolean
+  @Column({type: "boolean"})
+  canceled: boolean
 
-    @Column({type: "int"})
-    billed: boolean
+  @Column({type: "boolean"})
+  billed: boolean
 
-    @OneToMany(() => InvoiceLineItem, (lineItem) => lineItem.invoice)
-    lineItems: InvoiceLineItem[]
+  @OneToMany(() => InvoiceLineItem, (lineItem) => lineItem.invoice)
+  lineItems: InvoiceLineItem[]
 
-    @ManyToOne(() => Customer, (customer) => customer.invoices)
-    customer: Customer
+  @Column({type: "varchar"})
+  _customerId: string
+
+  @ManyToOne(() => Customer, (customer) => customer.invoices)
+  @JoinColumn({name: "_customerId"})
+  customer: Customer
 }

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { reactive } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email } from "@vuelidate/validators";
-import { PersonalFormData } from "../../types/forms/personal-data-form-types";
+import {reactive} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required, email} from "@vuelidate/validators";
+import {PersonalFormData} from "../../types/forms/personal-data-form-types";
 import TextField from "./elements/TextField.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 
 const props = defineProps<{ formData: PersonalFormData }>();
 const emit = defineEmits<{
@@ -14,20 +14,20 @@ const emit = defineEmits<{
 const $q = useQuasar();
 const formData = reactive<PersonalFormData>(props.formData);
 const rules = {
-  firstName: { required },
-  lastName: { required },
-  address: { required },
-  city: { required },
-  zip: { required },
-  country: { required },
-  email: { required, email },
+  firstName: {required},
+  lastName: {required},
+  address: {required},
+  city: {required},
+  zip: {required},
+  country: {required},
+  email: {required, email},
   banking: {
-    iban: { required },
-    bic: { required },
-    bank: { required },
+    iban: {required},
+    bic: {required},
+    bank: {required},
   },
   taxId: {},
-  taxNumber: { required },
+  taxNumber: {required},
 };
 const v$ = useVuelidate(rules, formData);
 
@@ -193,7 +193,7 @@ function onSubmit(): void {
     />
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn icon="save" type="submit" color="primary" />
+      <q-btn icon="save" type="submit" color="primary"/>
     </q-page-sticky>
   </q-form>
 </template>

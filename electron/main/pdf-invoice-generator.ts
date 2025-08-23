@@ -51,6 +51,7 @@ export interface PdfInvoice {
   signature: string;
   logo: string;
 }
+
 function createInvoicePdf(
   invoice: PdfInvoice,
   exportPath: string,
@@ -58,7 +59,7 @@ function createInvoicePdf(
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
-      const doc = new PDFDocument({ margin: 50 });
+      const doc = new PDFDocument({margin: 50});
       doc.fontSize(invoice.font.size);
       doc.font(invoice.font.default);
 
@@ -97,13 +98,13 @@ function addDraftWatermark(doc: PDFKit.PDFDocument): void {
 
   doc.fontSize(fontSize);
   doc.fillColor("red");
-  doc.rotate(-45, { origin: [pageWidth / 2, pageHeight / 2] });
+  doc.rotate(-45, {origin: [pageWidth / 2, pageHeight / 2]});
   doc.opacity(0.3);
   doc.text(text, 0, 350, {
     align: "center",
     width: pageWidth,
   });
-  doc.rotate(-45, { origin: [pageWidth / 2, pageHeight / 2] });
+  doc.rotate(-45, {origin: [pageWidth / 2, pageHeight / 2]});
   doc.opacity(1);
   doc.fillColor("black");
 }
@@ -123,7 +124,7 @@ function generateHeader(doc: PDFKit.PDFDocument, invoice: PdfInvoice): void {
 
   const posX = calculateXForRightAlign(imageWidth, pageWidth, marginRight);
 
-  doc.image(invoice.logo, posX, 50, { width: 200 });
+  doc.image(invoice.logo, posX, 50, {width: 200});
 }
 
 function generateSellerInformation(
@@ -131,7 +132,7 @@ function generateSellerInformation(
   invoice: PdfInvoice
 ): void {
   doc.font(invoice.font.bold);
-  doc.text(invoice.seller.name, 50, 100, { continued: true });
+  doc.text(invoice.seller.name, 50, 100, {continued: true});
   doc.font(invoice.font.default);
   doc
     .text(
@@ -165,10 +166,10 @@ function generateBuyerInformation(
   doc.text(`${invoice.buyer.zip} ${invoice.buyer.city}`);
 
   const tableContent = [
-    { header: "Rechnungs-Nr.", value: invoice.invoiceNumber },
-    { header: "Kunden-Nr.", value: invoice.buyer.customerNumber },
-    { header: "Rechnungsdatum", value: invoice.invoiceDate },
-    { header: "Lieferdatum", value: invoice.deliveryDate },
+    {header: "Rechnungs-Nr.", value: invoice.invoiceNumber},
+    {header: "Kunden-Nr.", value: invoice.buyer.customerNumber},
+    {header: "Rechnungsdatum", value: invoice.invoiceDate},
+    {header: "Lieferdatum", value: invoice.deliveryDate},
   ];
 
   let startY = initY;
@@ -214,7 +215,7 @@ function generateLineItems(doc: PDFKit.PDFDocument, invoice: PdfInvoice): void {
   doc.y = doc.y + 10;
 
   for (let i = 0; i < invoice.lineItems.length; i++) {
-    const { qty, description, unit, unitPrice, unitTotal, title } =
+    const {qty, description, unit, unitPrice, unitTotal, title} =
       invoice.lineItems[i];
 
     doc.moveDown();
@@ -281,15 +282,15 @@ function generateTableHeader(
   const y = doc.y;
   doc.font(invoice.font.bold);
 
-  doc.text("Pos.", posStartX, y, { width: posWidth });
-  doc.text("Bezeichnung", bezeichnungStartX, y, { width: bezeichnungWidth });
+  doc.text("Pos.", posStartX, y, {width: posWidth});
+  doc.text("Bezeichnung", bezeichnungStartX, y, {width: bezeichnungWidth});
   doc.text("Einheit", einheitStartX, y, {
     width: einheitWidth,
     align: "right",
   });
-  doc.text("Anz.", anzahlStartX, y, { width: anzahlWidth, align: "right" });
-  doc.text("Preis", preisStartX, y, { width: preisWidth, align: "right" });
-  doc.text("Summe", summeStartX, y, { width: summeWidth, align: "right" });
+  doc.text("Anz.", anzahlStartX, y, {width: anzahlWidth, align: "right"});
+  doc.text("Preis", preisStartX, y, {width: preisWidth, align: "right"});
+  doc.text("Summe", summeStartX, y, {width: summeWidth, align: "right"});
 
   doc.font(invoice.font.default);
 
@@ -349,23 +350,23 @@ function generateTableRow(
     y = doc.y;
   }
 
-  doc.text(pos, posStartX, y, { width: posWidth, align: "center" });
+  doc.text(pos, posStartX, y, {width: posWidth, align: "center"});
   doc.font(invoice.font.bold);
-  doc.text(title, bezeichnungStartX, y, { width: bezeichnungWidth });
+  doc.text(title, bezeichnungStartX, y, {width: bezeichnungWidth});
   doc.font(invoice.font.default);
   doc.text(unit, einheitStartX, y, {
     width: einheitWidth,
     align: "right",
   });
-  doc.text(qty, anzahlStartX, y, { width: anzahlWidth, align: "right" });
+  doc.text(qty, anzahlStartX, y, {width: anzahlWidth, align: "right"});
   doc.font(invoice.font.bold);
 
-  doc.text(price, preisStartX, y, { width: preisWidth, align: "right" });
-  doc.text(total, summeStartX, y, { width: summeWidth, align: "right" });
+  doc.text(price, preisStartX, y, {width: preisWidth, align: "right"});
+  doc.text(total, summeStartX, y, {width: summeWidth, align: "right"});
   doc.font(invoice.font.default);
 
   const descriptionWidth = pageWidth - margin - bezeichnungStartX;
-  doc.text(description, bezeichnungStartX, y + 25, { width: descriptionWidth });
+  doc.text(description, bezeichnungStartX, y + 25, {width: descriptionWidth});
 }
 
 function generateHr(doc: PDFKit.PDFDocument, y: number): void {
@@ -477,7 +478,7 @@ function generateSellerBankingFooterInformation(
   const blockStartX = pageWidth - margin - maxWidth;
 
   doc.font(invoice.font.bold);
-  doc.text("Bankverbindung", blockStartX, yStart, { align: "left" });
+  doc.text("Bankverbindung", blockStartX, yStart, {align: "left"});
 
   doc.font(invoice.font.default);
   doc.text(invoice.seller.banking.bank, blockStartX, yStart + 20, {
@@ -499,4 +500,4 @@ function formatCurrency(cents: number): string {
   }).format(euros);
 }
 
-export { createInvoicePdf };
+export {createInvoicePdf};

@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { useVuelidate } from "@vuelidate/core";
-import { useQuasar } from "quasar";
+import {useVuelidate} from "@vuelidate/core";
+import {useQuasar} from "quasar";
 import CustomerSingleSelectField from "./elements/CustomerSingleSelectField.vue";
 import DateField from "./elements/DateField.vue";
-import { numeric, required } from "@vuelidate/validators";
+import {numeric, required} from "@vuelidate/validators";
 import {
   dateStringToUnixTimestamp,
   unixTimestampToDateString,
 } from "../../util/timestamp";
 import TwoColumn from "../layout/TwoColumn.vue";
 import LineItemsField from "./elements/LineItemsField.vue";
-import { Invoice, LineItem } from "../../types/invoice-types";
-import { ref } from "vue";
-import { formatCurrency } from "../../util/format-currency";
+import {Invoice, LineItem} from "../../types/invoice-types";
+import {ref} from "vue";
+import {formatCurrency} from "../../util/format-currency";
 
 const props = defineProps<{
   formData: Invoice;
@@ -23,15 +23,15 @@ const emit = defineEmits<{
 const $q = useQuasar();
 
 const rules = {
-  total: { required },
-  _customerId: { required },
-  invoiceNumber: { required },
-  invoiceDate: { required, numeric },
-  deliveryDate: { required, numeric },
-  draft: { required },
-  canceled: { required },
-  billed: { required },
-  lineItems: { required },
+  total: {required},
+  _customerId: {required},
+  invoiceNumber: {required},
+  invoiceDate: {required, numeric},
+  deliveryDate: {required, numeric},
+  draft: {required},
+  canceled: {required},
+  billed: {required},
+  lineItems: {required},
 };
 const invoice = ref<Invoice>(JSON.parse(JSON.stringify(props.formData)));
 const v$ = useVuelidate(rules, invoice);
@@ -45,6 +45,7 @@ function computeInvoiceTotal() {
     0
   );
 }
+
 function onSubmit(): void {
   v$.value.$touch();
   if (!v$.value.$invalid) {

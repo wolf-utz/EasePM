@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useVuelidate } from "@vuelidate/core";
-import { required, numeric } from "@vuelidate/validators";
-import { InvoiceSettings } from "../../types/forms/invoice-settings-form-types";
+import {useVuelidate} from "@vuelidate/core";
+import {required, numeric} from "@vuelidate/validators";
+import {InvoiceSettings} from "../../types/forms/invoice-settings-form-types";
 import TextField from "./elements/TextField.vue";
 import NumberField from "./elements/NumberField.vue";
 import TextareaField from "./elements/TextareaField.vue";
 import TwoColumn from "../layout/TwoColumn.vue";
-import { useQuasar } from "quasar";
-import { onMounted, ref } from "vue";
+import {useQuasar} from "quasar";
+import {onMounted, ref} from "vue";
 
 const props = defineProps<{
   formData: InvoiceSettings;
@@ -18,17 +18,17 @@ const emit = defineEmits<{
 const ipcRenderer = window.ipcRenderer;
 const $q = useQuasar();
 const rules = {
-  defaultFont: { required },
-  boldFont: { required },
-  fontSize: { required, numeric },
-  fontSizeSmall: { required, numeric },
-  title: { required },
-  introText: { required },
-  paymentNote: { required },
-  taxHint: { required },
-  outroText: { required },
-  signature: { required },
-  logo: { required },
+  defaultFont: {required},
+  boldFont: {required},
+  fontSize: {required, numeric},
+  fontSizeSmall: {required, numeric},
+  title: {required},
+  introText: {required},
+  paymentNote: {required},
+  taxHint: {required},
+  outroText: {required},
+  signature: {required},
+  logo: {required},
 };
 const v$ = useVuelidate(rules, props.formData);
 const logo = ref<File | null>(null);
@@ -162,19 +162,20 @@ async function onUploadLogo() {
     />
 
     <div class="">
-<!--    @todo move this to its own component and allow error state.  -->
-      <label class="q-field row no-wrap items-start q-field--filled q-textarea q-textarea--autogrow q-field--float q-field--labeled q-field--dark q-field--with-bottom">
+      <!--    @todo move this to its own component and allow error state.  -->
+      <label
+        class="q-field row no-wrap items-start q-field--filled q-textarea q-textarea--autogrow q-field--float q-field--labeled q-field--dark q-field--with-bottom">
         <div class="q-field__inner relative-position col self-stretch">
           <div class="q-field__control relative-position row no-wrap"
                tabindex="-1">
             <div class="q-field__control-container col relative-position row no-wrap q-anchor--skip" style="">
-              <q-btn color="secondary" @click="onUploadLogo" icon="attach_file" label="Upload invoice logo" />
+              <q-btn color="secondary" @click="onUploadLogo" icon="attach_file" label="Upload invoice logo"/>
               <q-img
-                  v-if="logoSrc"
-                  :src="logoSrc"
-                  height="auto"
-                  width="180px"
-                  spinner-color="white"
+                v-if="logoSrc"
+                :src="logoSrc"
+                height="auto"
+                width="180px"
+                spinner-color="white"
               />
               <div class="q-field__label no-pointer-events absolute ellipsis">
                 Invoice logo

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, reactive } from "vue";
-import { useVuelidate } from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-import { useQuasar } from "quasar";
-import { TimesheetFilter } from "../../types/forms/timesheet-filter-types";
+import {computed, reactive} from "vue";
+import {useVuelidate} from "@vuelidate/core";
+import {required} from "@vuelidate/validators";
+import {useQuasar} from "quasar";
+import {TimesheetFilter} from "../../types/forms/timesheet-filter-types";
 import DateField from "./elements/DateField.vue";
 import {
   dateStringToUnixTimestamp,
@@ -25,9 +25,9 @@ const canSubmit = computed(
 );
 const $q = useQuasar();
 const rules = {
-  startDate: { required },
-  endDate: { required },
-  _customerId: { required },
+  startDate: {required},
+  endDate: {required},
+  _customerId: {required},
   _projectId: {},
 };
 const v$ = useVuelidate(rules, formData);

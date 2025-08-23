@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import { Validation } from "../../../types/forms/validation";
+import {ref} from "vue";
+import {Validation} from "../../../types/forms/validation";
 
 interface Props {
   validation: Validation;

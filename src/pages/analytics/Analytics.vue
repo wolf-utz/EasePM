@@ -4,14 +4,14 @@
     <div class="row items-center justify-between q-mb-lg">
       <div class="text-h4 text-white">Analytics Dashboard</div>
       <q-select
-          v-model="currentYear"
-          :options="yearOptions"
-          dense
-          outlined
-          dark
-          class="year-selector"
-          @update:model-value="onYearChange"
-          :disable="loading"
+        v-model="currentYear"
+        :options="yearOptions"
+        dense
+        outlined
+        dark
+        class="year-selector"
+        @update:model-value="onYearChange"
+        :disable="loading"
       />
     </div>
 
@@ -28,10 +28,10 @@
         <div class="text-h6">Error Loading Analytics</div>
         <div class="q-mt-sm">{{ error }}</div>
         <q-btn
-            color="primary"
-            label="Retry"
-            @click="loadAnalyticsData"
-            class="q-mt-md"
+          color="primary"
+          label="Retry"
+          @click="loadAnalyticsData"
+          class="q-mt-md"
         />
       </div>
     </div>
@@ -117,12 +117,12 @@
             <div class="text-h6 text-white">Monthly Hours Breakdown</div>
             <div class="chart-controls">
               <q-btn-toggle
-                  v-model="chartType"
-                  toggle-color="primary"
-                  :options="chartTypeOptions"
-                  dense
-                  class="text-white"
-                  @update:model-value="updateChart"
+                v-model="chartType"
+                toggle-color="primary"
+                :options="chartTypeOptions"
+                dense
+                class="text-white"
+                @update:model-value="updateChart"
               />
             </div>
           </div>
@@ -156,10 +156,10 @@
         <div class="text-h6">No Analytics Data</div>
         <div class="q-mt-sm">No work logs found for {{ currentYear }}</div>
         <q-btn
-            color="primary"
-            label="Refresh"
-            @click="loadAnalyticsData"
-            class="q-mt-md"
+          color="primary"
+          label="Refresh"
+          @click="loadAnalyticsData"
+          class="q-mt-md"
         />
       </div>
     </div>
@@ -184,16 +184,16 @@ import {
 } from 'chart.js'
 
 Chart.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    BarController,
-    LineController,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
-    Legend
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  LineController,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
 )
 
 // Types
@@ -259,7 +259,7 @@ const avgHoursPerMonth = computed(() => {
 const peakMonth = computed(() => {
   if (!analyticsData.value.length) return '-'
   const peak = analyticsData.value.reduce((max, item) =>
-      item.hours > max.hours ? item : max
+    item.hours > max.hours ? item : max
   )
   return peak.month
 })
@@ -267,7 +267,7 @@ const peakMonth = computed(() => {
 const peakHours = computed(() => {
   if (!analyticsData.value.length) return '0'
   const peak = analyticsData.value.reduce((max, item) =>
-      item.hours > max.hours ? item : max
+    item.hours > max.hours ? item : max
   )
   return Math.round(peak.hours)
 })
@@ -333,7 +333,7 @@ const insights = computed((): Insight[] => {
 
   // Peak month insight
   const peak = analyticsData.value.reduce((max, item) =>
-      item.hours > max.hours ? item : max
+    item.hours > max.hours ? item : max
   )
   insights.push({
     id: 'peak',
@@ -344,7 +344,7 @@ const insights = computed((): Insight[] => {
 
   // Low activity insight
   const low = analyticsData.value.reduce((min, item) =>
-      item.hours < min.hours ? item : min
+    item.hours < min.hours ? item : min
   )
   if (low.hours < avg * 0.5) {
     insights.push({
@@ -357,7 +357,7 @@ const insights = computed((): Insight[] => {
 
   // Consistency insight
   const variance = analyticsData.value.reduce((sum, item) =>
-      sum + Math.pow(item.hours - avg, 2), 0
+    sum + Math.pow(item.hours - avg, 2), 0
   ) / 12
   const stdDev = Math.sqrt(variance)
 
@@ -428,8 +428,8 @@ const loadAnalyticsData = async (): Promise<void> => {
 
   } catch (err: any) {
     handleError(
-        `Failed to load analytics data: ${err.message || 'Unknown error'}`,
-        err
+      `Failed to load analytics data: ${err.message || 'Unknown error'}`,
+      err
     )
   } finally {
     loading.value = false
@@ -539,8 +539,8 @@ const renderChart = (): void => {
     chartInstance = new Chart(chartCanvas.value, config)
   } catch (error: any) {
     handleError(
-        `Failed to render chart: ${error.message || 'Unknown error'}`,
-        error
+      `Failed to render chart: ${error.message || 'Unknown error'}`,
+      error
     )
   }
 }

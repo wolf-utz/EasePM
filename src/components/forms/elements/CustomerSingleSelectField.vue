@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from "vue";
-import { Validation } from "../../../types/forms/validation";
-import { Customer } from "../../../types/forms/customer-types";
+import {onMounted, reactive, ref} from "vue";
+import {Validation} from "../../../types/forms/validation";
+import {Customer} from "../../../types/forms/customer-types";
 // @ts-ignore
 const ipcRenderer: ElectronApi = window.ipcRenderer;
+
 interface Props {
   validation: Validation;
   label: string;
@@ -16,6 +17,7 @@ interface CustomerOption {
   label: string;
   value: string;
 }
+
 const props = defineProps<Props>();
 const loaded = ref<boolean>(false);
 const emit = defineEmits<{ (e: "change", value: string): void }>();
@@ -76,7 +78,7 @@ onMounted(async () => {
       </template>
       <template v-slot:no-option>
         <q-item>
-          <q-item-section class="text-grey"> No results </q-item-section>
+          <q-item-section class="text-grey"> No results</q-item-section>
         </q-item>
       </template>
     </q-select>

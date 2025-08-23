@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import {ref} from "vue";
 import {
   convertUnixTimestampToTimeInput,
   convertTimeInputToUnixTimestamp,
@@ -11,6 +11,7 @@ interface Props {
   property: string;
   value: number;
 }
+
 const props = defineProps<Props>();
 const emit = defineEmits<{ (e: "change", value: number): void }>();
 

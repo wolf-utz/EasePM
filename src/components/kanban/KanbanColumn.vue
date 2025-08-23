@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
-import { Task, TaskState } from "../../types/project-types";
+import {ref, watch} from "vue";
+import {Task, TaskState} from "../../types/project-types";
 import draggable from "vuedraggable";
 import KanbanTask from "./KanbanTask.vue";
 
@@ -22,6 +22,7 @@ const localTasks = ref<Task[]>(props.tasks);
 function onTaskMoved(): void {
   emit("taskMoved");
 }
+
 function onTaskUpdated(): void {
   emit("taskUpdated");
 }
@@ -42,7 +43,7 @@ watch(localTasks, (newTasks) => {
     <q-card-section>
       <div class="text-h6 text-center">{{ state }} ({{ tasks.length }})</div>
     </q-card-section>
-    <q-separator dark />
+    <q-separator dark/>
 
     <q-card-section>
       <draggable
@@ -55,7 +56,7 @@ watch(localTasks, (newTasks) => {
         @end="onTaskMoved"
       >
         <template #item="{ element: task }">
-          <KanbanTask :task="task" v-on:updateTask="onTaskUpdated" />
+          <KanbanTask :task="task" v-on:updateTask="onTaskUpdated"/>
         </template>
       </draggable>
     </q-card-section>
@@ -66,6 +67,7 @@ watch(localTasks, (newTasks) => {
 .full-height {
   height: 100%;
 }
+
 .drop-zone {
   min-height: 300px;
   /* outline: 1px solid var(--q-primary); */

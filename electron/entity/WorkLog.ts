@@ -1,26 +1,30 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm"
 import {Task} from "./Task";
 
-@Entity()
+@Entity("work_log")
 export class WorkLog {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn("uuid")
+  _id: string
 
-    @Column({type: "int"})
-    creationDateTime: number
+  @Column({type: "int"})
+  creationDateTime: number
 
-    @Column({type: "int"})
-    displayDateTime: number
+  @Column({type: "int"})
+  displayDateTime: number
 
-    @Column({type: "text"})
-    message: string
+  @Column({type: "text"})
+  message: string
 
-    @Column({type: "int"})
-    trackedTime: number
+  @Column({type: "int"})
+  trackedTime: number
 
-    @Column({type: "int"})
-    billable: boolean
+  @Column({type: "boolean"})
+  billable: boolean
 
-    @ManyToOne(() => Task, (task) => task.workLogs)
-    task: Task
+  @Column({type: "varchar"})
+  _taskId: string
+
+  @ManyToOne(() => Task, (task) => task.workLogs)
+  @JoinColumn({name: "_taskId"})
+  task: Task
 }
