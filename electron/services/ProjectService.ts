@@ -357,8 +357,6 @@ export class ProjectService {
       await this.projectRepo.update({_id: projectId}, {
         taskAutoIncrement: maxTaskNumber + 1
       });
-
-      console.log(`Synced taskAutoIncrement for project ${project.projectNumber} to ${maxTaskNumber + 1}`);
     } catch (error) {
       throw new Error(`Failed to sync task auto increment: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -367,13 +365,11 @@ export class ProjectService {
   async syncAllTaskAutoIncrements(): Promise<void> {
     try {
       const projects = await this.findAll();
-      console.log(`Syncing task auto increments for ${projects.length} projects...`);
 
       for (const project of projects) {
         await this.syncTaskAutoIncrement(project._id);
       }
 
-      console.log('Finished syncing all task auto increments');
     } catch (error) {
       throw new Error(`Failed to sync all task auto increments: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
